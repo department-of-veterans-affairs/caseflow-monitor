@@ -13,14 +13,15 @@ class BGSService
 
     @last_result[:pass] = false
 
-    time = Benchmark.realtime do
+    latency = Benchmark.realtime do
       person = @bgs_client.people.find_by_file_number(796147498)
       if person[:first_nm] == "VERA"
         @last_result[:pass] = true
       end
     end
 
-    @last_result[:latency] = time
+    @last_result[:time] = Time.now
+    @last_result[:latency] = latency
     @last_result[:service] = "Person"
     @last_result[:api] = "findPersonByFileNumber"
 

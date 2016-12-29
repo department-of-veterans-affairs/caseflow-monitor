@@ -11,7 +11,7 @@
             Last Check:
           </span>
           <span class="monitor-metric-value">
-            2016/12/29 4:00PM EST
+            <%= distance_of_time_in_words(results[:bgs][:time], Time.now) %> ago
           </span>
         </div>
         <div class="monitor-metric">

@@ -13,6 +13,10 @@ class MonitorController < ApplicationController
       bgs: Rails.cache.read('bgs')
     }
 
+    puts results[:bgs].inspect
+    # puts results[:bgs]
+    return results
+
   end
 
   helper_method :results
