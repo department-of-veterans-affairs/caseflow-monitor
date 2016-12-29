@@ -1,0 +1,57 @@
+// Add scss includes explicitly here.
+@import 'caseflow_main';
+
+.align-top {
+  vertical-align: top;
+}
+
+
+.cf-logo-image-default {
+  background-image: url(asset-path('caseflow-monitor-logo.svg'));
+  width: 32px;
+  height: 32px;
+  background-size: 32px 32px;
+}
+
+.cf-logo-image-monitor {
+  background-image: url(asset-path('caseflow-monitor-logo.svg'));
+  width: 32px;
+  height: 32px;
+  background-size: 32px 32px;
+}
+
+.feedback {
+  width: 458px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.monitor-block {
+  border: 1px solid #d6d7d9;
+  background: #ffffff;
+}
+
+.monitor-block-title {
+  font-size: 2.5rem;
+  border-bottom: 1px solid #d6d7d9;
+  padding: 10px;
+}
+
+.monitor-block-body {
+  padding: 10px;
+}
+
+.monitor-metric {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.monitor-metric-label {
+  width: 100px;
+  display: inline-block;
+}
+
+.monitor-metric-value {
+  font-weight: bold;
+  text-align: right;
+}

@@ -1,0 +1,139 @@
+<div class="cf-app-segment">
+  </div>
+  <div class="usa-width-one-third">
+    <div class="monitor-block">
+      <div class="monitor-block-title">
+        BGS
+      </div>
+      <div class="monitor-block-body">
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Last Check:
+          </span>
+          <span class="monitor-metric-value">
+            2016/12/29 4:00PM EST
+          </span>
+        </div>
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Status:
+          </span>
+          <span class="monitor-metric-value">
+            <% if results[:bgs][:pass] %>
+             Up
+            <% else %>
+             Down
+            <% end %>
+          </span>
+        </div>
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Latency:
+          </span>
+          <span class="monitor-metric-value">
+            <%= number_with_precision(results[:bgs][:latency], precision: 2)  %> s
+          </span>
+        </div>
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Service:
+          </span>
+          <span class="monitor-metric-value">
+            <%= results[:bgs][:service] %>
+          </span>
+        </div>
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            API:
+          </span>
+          <span class="monitor-metric-value">
+            <%= results[:bgs][:api] %>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="usa-width-one-third">
+    <div class="monitor-block">
+      <div class="monitor-block-title">
+        VBMS
+      </div>
+      <div class="monitor-block-body">
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Last Check:
+          </span>
+          <span class="monitor-metric-value">
+            2016/12/29 4:00PM EST
+          </span>
+        </div>
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Status:
+          </span>
+          <span class="monitor-metric-value">
+            Up
+          </span>
+        </div>
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Latency:
+          </span>
+          <span class="monitor-metric-value">
+            600ms
+          </span>
+        </div>
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Query:
+          </span>
+          <span class="monitor-metric-value">
+            FindPerson
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="usa-width-one-third">
+    <div class="monitor-block">
+      <div class="monitor-block-title">
+        VACOLS
+      </div>
+      <div class="monitor-block-body">
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Last Check:
+          </span>
+          <span class="monitor-metric-value">
+            2016/12/29 4:00PM EST
+          </span>
+        </div>
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Status:
+          </span>
+          <span class="monitor-metric-value">
+            Up
+          </span>
+        </div>
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Latency:
+          </span>
+          <span class="monitor-metric-value">
+            600ms
+          </span>
+        </div>
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Query:
+          </span>
+          <span class="monitor-metric-value">
+            ListDocument
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
