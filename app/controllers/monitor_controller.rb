@@ -1,20 +1,23 @@
 class MonitorController < ApplicationController
 
-  def admin
-    @feedback = Monitor.all
-  end
-
-  def new
-    puts "Rails cache #{Rails.cache.read('bgs')}"
-  end
-
   def results
-    results = {
-      bgs: Rails.cache.read('bgs')
-    }
 
-    puts results[:bgs].inspect
-    # puts results[:bgs]
+    results = {}
+    bgs = Rails.cache.read('bgs')
+    if bgs != nil
+      results[:bgs] = bgs
+    end
+
+    vacols = Rails.cache.read('vacols')
+    if vacols != nil
+      results[:vacols] = vacols
+    end
+
+    vbms = Rails.cache.read('vbms')
+    if vbms != nil
+      results[:vbms] = vbms
+    end
+
     return results
 
   end

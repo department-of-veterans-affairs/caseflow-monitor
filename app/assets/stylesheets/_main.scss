@@ -20,6 +20,14 @@
   background-size: 32px 32px;
 }
 
+.monitor-warning-icon {
+  background-image: url(asset-path('warning.svg'));
+  width: 32px;
+  height: 32px;
+  background-size: 32px 32px;
+}
+
+
 .feedback {
   width: 458px;
   margin-left: auto;
@@ -29,6 +37,10 @@
 .monitor-block {
   border: 1px solid #d6d7d9;
   background: #ffffff;
+}
+
+.monitor-block-error {
+  background: #f9dede;
 }
 
 .monitor-block-title {

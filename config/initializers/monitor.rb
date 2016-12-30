@@ -1,23 +1,40 @@
 # One thread for background poll
+
 Thread.new do
+  service = BGSService.new
   while 1 do
-    bgs_service = BGSService.new
-    bgs_service.query
-    sleep 60
+    begin
+      service.query
+    rescue Exception => e
+        puts "EXCEPTION: #{e.inspect}"
+        puts "MESSAGE: #{e.message}"
+    end
+    sleep 300
   end
 end
 
-#
-# Thread.new do
-#   while 1 do
-#     sleep 1
-#     puts 'testing timer 2'
-#   end
-# end
-#
-# Thread.new do
-#   while 1 do
-#     sleep 1
-#     puts 'testing timer 3'
-#   end
-# end
+Thread.new do
+  service = VacolsService.new
+  while 1 do
+    begin
+      service.query
+    rescue Exception => e
+        puts "EXCEPTION: #{e.inspect}"
+        puts "MESSAGE: #{e.message}"
+    end
+    sleep 300
+  end
+end
+
+Thread.new do
+  service = VBMSService.new
+  while 1 do
+    begin
+      service.query
+    rescue Exception => e
+        puts "EXCEPTION: #{e.inspect}"
+        puts "MESSAGE: #{e.message}"
+    end
+    sleep 300
+  end
+end

@@ -6,7 +6,15 @@ class BGSService
 
   def initialize
     @bgs_client = init_client
-    @last_result = { pass: false }
+    @last_result = {
+      name: "BGS",
+      time: 0,
+      latency: 0,
+      service: "Person",
+      api: "findPersonByFileNumber",
+      pass: false
+    }
+    save
   end
 
   def query
@@ -14,6 +22,7 @@ class BGSService
     @last_result[:pass] = false
 
     latency = Benchmark.realtime do
+      # person = @bgs_client.people.find_by_file_number(17788774)
       person = @bgs_client.people.find_by_file_number(796147498)
       if person[:first_nm] == "VERA"
         @last_result[:pass] = true
@@ -22,10 +31,8 @@ class BGSService
 
     @last_result[:time] = Time.now
     @last_result[:latency] = latency
-    @last_result[:service] = "Person"
-    @last_result[:api] = "findPersonByFileNumber"
 
-    Rails.cache.write("bgs", @last_result)
+    save
   end
 
   private
@@ -42,5 +49,9 @@ class BGSService
       ssl_ca_cert: ENV["BGS_CA_CERT_LOCATION"],
       log: true
     )
+  end
+
+  def save
+    Rails.cache.write("bgs", @last_result)
   end
 end

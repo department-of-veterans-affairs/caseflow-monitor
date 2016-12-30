@@ -1,139 +1,68 @@
 <div class="cf-app-segment">
   </div>
-  <div class="usa-width-one-third">
-    <div class="monitor-block">
-      <div class="monitor-block-title">
-        BGS
-      </div>
-      <div class="monitor-block-body">
-        <div class="monitor-metric">
-          <span class="monitor-metric-label">
-            Last Check:
-          </span>
-          <span class="monitor-metric-value">
-            <%= distance_of_time_in_words(results[:bgs][:time], Time.now) %> ago
-          </span>
-        </div>
-        <div class="monitor-metric">
-          <span class="monitor-metric-label">
-            Status:
-          </span>
-          <span class="monitor-metric-value">
-            <% if results[:bgs][:pass] %>
-             Up
-            <% else %>
-             Down
-            <% end %>
-          </span>
-        </div>
-        <div class="monitor-metric">
-          <span class="monitor-metric-label">
-            Latency:
-          </span>
-          <span class="monitor-metric-value">
-            <%= number_with_precision(results[:bgs][:latency], precision: 2)  %> s
-          </span>
-        </div>
-        <div class="monitor-metric">
-          <span class="monitor-metric-label">
-            Service:
-          </span>
-          <span class="monitor-metric-value">
-            <%= results[:bgs][:service] %>
-          </span>
-        </div>
-        <div class="monitor-metric">
-          <span class="monitor-metric-label">
-            API:
-          </span>
-          <span class="monitor-metric-value">
-            <%= results[:bgs][:api] %>
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="usa-width-one-third">
-    <div class="monitor-block">
-      <div class="monitor-block-title">
-        VBMS
-      </div>
-      <div class="monitor-block-body">
-        <div class="monitor-metric">
-          <span class="monitor-metric-label">
-            Last Check:
-          </span>
-          <span class="monitor-metric-value">
-            2016/12/29 4:00PM EST
-          </span>
-        </div>
-        <div class="monitor-metric">
-          <span class="monitor-metric-label">
-            Status:
-          </span>
-          <span class="monitor-metric-value">
-            Up
-          </span>
-        </div>
-        <div class="monitor-metric">
-          <span class="monitor-metric-label">
-            Latency:
-          </span>
-          <span class="monitor-metric-value">
-            600ms
-          </span>
-        </div>
-        <div class="monitor-metric">
-          <span class="monitor-metric-label">
-            Query:
-          </span>
-          <span class="monitor-metric-value">
-            FindPerson
-          </span>
+  <% results.keys.each do |key| %>
+    <div class="usa-width-one-third">
+      <div class="monitor-block">
+        <% if results[key][:pass] %>
+          <div class="monitor-block-title">
+            <%= content_tag(:span, nil, :class => "cf-logo-image #{logo_class}") %><%= results[key][:name] %>
+          </div>
+        <% else %>
+          <div class="monitor-block-title monitor-block-error">
+            <%= content_tag(:span, nil, :class => "cf-logo-image monitor-warning-icon") %><%= results[key][:name] %>
+          </div>
+        <% end %>
+        <div class="monitor-block-body">
+          <div class="monitor-metric">
+            <span class="monitor-metric-label">
+              Last Check:
+            </span>
+            <span class="monitor-metric-value">
+              <% if results[key][:time] == 0%>
+               Never
+              <% else %>
+               <%= distance_of_time_in_words(results[key][:time], Time.now) %> ago
+              <% end %>
+            </span>
+          </div>
+          <div class="monitor-metric">
+            <span class="monitor-metric-label">
+              Status:
+            </span>
+            <span class="monitor-metric-value">
+              <% if results[key][:pass] %>
+               Up
+              <% else %>
+               Down
+              <% end %>
+            </span>
+          </div>
+          <div class="monitor-metric">
+            <span class="monitor-metric-label">
+              Latency:
+            </span>
+            <span class="monitor-metric-value">
+              <%= number_with_precision(results[key][:latency], precision: 2)  %> s
+            </span>
+          </div>
+          <div class="monitor-metric">
+            <span class="monitor-metric-label">
+              Service:
+            </span>
+            <span class="monitor-metric-value">
+              <%= results[key][:service] %>
+            </span>
+          </div>
+          <div class="monitor-metric">
+            <span class="monitor-metric-label">
+              API:
+            </span>
+            <span class="monitor-metric-value">
+              <%= results[key][:api] %>
+            </span>
+          </div>
         </div>
       </div>
     </div>
-
-  </div>
-  <div class="usa-width-one-third">
-    <div class="monitor-block">
-      <div class="monitor-block-title">
-        VACOLS
-      </div>
-      <div class="monitor-block-body">
-        <div class="monitor-metric">
-          <span class="monitor-metric-label">
-            Last Check:
-          </span>
-          <span class="monitor-metric-value">
-            2016/12/29 4:00PM EST
-          </span>
-        </div>
-        <div class="monitor-metric">
-          <span class="monitor-metric-label">
-            Status:
-          </span>
-          <span class="monitor-metric-value">
-            Up
-          </span>
-        </div>
-        <div class="monitor-metric">
-          <span class="monitor-metric-label">
-            Latency:
-          </span>
-          <span class="monitor-metric-value">
-            600ms
-          </span>
-        </div>
-        <div class="monitor-metric">
-          <span class="monitor-metric-label">
-            Query:
-          </span>
-          <span class="monitor-metric-value">
-            ListDocument
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
+  <% end %>
 </div>
