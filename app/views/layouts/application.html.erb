@@ -6,8 +6,14 @@
   <%= javascript_include_tag 'application' %>
 
   <% if content_for?(:head) %><%= yield :head %><% end %>
-
 </head>
+
+<script>
+  $(document).ready(function() {
+    $("time.timeago").timeago();
+  });
+</script>
+
 <body>
   <header>
     <nav class="cf-nav">

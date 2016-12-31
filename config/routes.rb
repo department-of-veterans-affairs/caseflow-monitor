@@ -2,10 +2,10 @@ Rails.application.routes.draw do
 
   resource :monitor
 
-  root 'monitor#new'
+  resource :info
 
-  # get "unauthorized" => "application#unauthorized"
-  # get "health-check" => "health_checks#show"
-  # get "admin" => "feedback#admin"
+  get "sample" => "sample#index"
+
+  root 'monitor#index'
 
 end

@@ -7,43 +7,29 @@ require 'mail'
 require 'xmldsig'
 require 'benchmark'
 
-class VBMSService
+class VBMSService < MonitorService
 
   def initialize
-    @last_result = {
-      name: "VBMS",
-      time: 0,
-      latency: 0,
-      service: "VBMS",
-      api: "ListDocuments",
-      pass: false
-    }
+    super
+    @connection = nil
+
+    @name = "VBMS"
+    @service = "VBMS"
+    @api = "ListDocuments"
+
     @client = VBMS::Client.from_env_vars(
       env_name: ENV["CONNECT_VBMS_ENV"]
     )
     save
   end
 
-  def query
-    @last_result[:pass] = false
+  def query_service
 
-    latency = Benchmark.realtime do
-      request = VBMS::Requests::ListDocuments.new(320102183)
-      doc = @client.send_request(request)
-      if doc.length > 0
-        @last_result[:pass] = true
-      end
+    request = VBMS::Requests::ListDocuments.new(Rails.application.secrets.target_file_num)
+    doc = @client.send_request(request)
+    if doc.length > 0
+      @pass = true
     end
-
-    @last_result[:time] = Time.now
-    @last_result[:latency] = latency
-
-    save
-
-  end
-
-  def save
-    Rails.cache.write("vbms", @last_result)
   end
 
 end

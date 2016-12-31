@@ -1,45 +1,31 @@
 require "bgs"
 require "benchmark"
 
-class BGSService
+class BGSService < MonitorService
   attr_accessor :last_result
 
   def initialize
+    super
     @bgs_client = init_client
-    @last_result = {
-      name: "BGS",
-      time: 0,
-      latency: 0,
-      service: "Person",
-      api: "findPersonByFileNumber",
-      pass: false
-    }
+
+    @name = "BGS"
+    @service = "Person"
+    @api = "findPersonByFileNumber"
     save
   end
 
-  def query
-
-    @last_result[:pass] = false
-
-    latency = Benchmark.realtime do
-      # person = @bgs_client.people.find_by_file_number(17788774)
-      person = @bgs_client.people.find_by_file_number(796147498)
-      if person[:first_nm] == "VERA"
-        @last_result[:pass] = true
-      end
+  def query_service
+    person = @bgs_client.people.find_by_file_number(Rails.application.secrets.target_file_num)
+    if !person[:first_nm].blank?
+      @pass = true
     end
-
-    @last_result[:time] = Time.now
-    @last_result[:latency] = latency
-
-    save
   end
 
   private
 
   def init_client
     BGS::Services.new(
-      env: Rails.application.config.bgs_environment,
+      env: ENV["BGS_ENVIRONMENT"],
       application: "CASEFLOW",
       client_ip: ENV["BGS_IP_ADDRESS"],
       client_station_id: ENV["BGS_STATION_ID"],
@@ -49,9 +35,5 @@ class BGSService
       ssl_ca_cert: ENV["BGS_CA_CERT_LOCATION"],
       log: true
     )
-  end
-
-  def save
-    Rails.cache.write("bgs", @last_result)
   end
 end

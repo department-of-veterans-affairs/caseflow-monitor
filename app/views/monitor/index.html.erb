@@ -1,0 +1,123 @@
+<script>
+
+  function roundLatency(latency) {
+    if(latency) {
+      return parseFloat(Math.round(latency * 100) / 100).toFixed(2);
+    }
+    return 0
+  }
+  function pollForMetrics() {
+    $.ajax({
+      dataType: "json",
+      url: 'sample',
+      success: function(data) {
+        $( "#monitor-metrics" ).html("");
+        $.each(data, function (serviceName, metricsData) {
+
+          metricsData.latency = roundLatency(metricsData.latency)
+          metricsData.latency10 = roundLatency(metricsData.latency10)
+          metricsData.latency60 = roundLatency(metricsData.latency60)
+          var source = document.getElementById("metrics-template").innerHTML;
+          var template = Handlebars.compile(source);
+          var output = template(metricsData);
+          $( "#monitor-metrics" ).append(output);
+          $("time.timeago").timeago();
+        });
+      },
+      complete: function() {
+        setTimeout(pollForMetrics, 5000);
+      }
+    });
+  }
+
+  pollForMetrics();
+
+</script>
+
+<script id="metrics-template" type="text/x-handlebars-template">
+  <div class="usa-width-one-third">
+    <div class="monitor-block">
+      <div class="monitor-block-title">
+        {{#if pass}}
+          <%= content_tag(:span, nil, :class => "cf-logo-image #{logo_class}") %>{{name}}
+        {{else}}
+          <%= content_tag(:span, nil, :class => "cf-logo-image monitor-warning-icon") %>{{name}}
+        {{/if}}
+      </div>
+      <div class="monitor-block-body">
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Last Checked:
+          </span>
+          <span class="monitor-metric-value">
+            {{#if time}}
+              <time class="timeago" datetime="{{time}}"></time>
+            {{else}}
+              Never
+            {{/if}}
+          </span>
+        </div>
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Status:
+          </span>
+          <span class="monitor-metric-value">
+            {{#if pass}}
+              Up
+            {{else}}
+              Down
+            {{/if}}
+          </span>
+        </div>
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Latency:
+          </span>
+          <span class="monitor-metric-value">
+            {{latency}} s
+          </span>
+        </div>
+
+        {{#if latency10}}
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Latency<sub>[MA10]</sub>:
+          </span>
+          <span class="monitor-metric-value">
+            {{latency10}} s
+          </span>
+        </div>
+        {{/if}}
+        {{#if latency60}}
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Latency<sub>[MA60]</sub>:
+          </span>
+          <span class="monitor-metric-value">
+            {{latency60}} s
+          </span>
+        </div>
+        {{/if}}
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Service:
+          </span>
+          <span class="monitor-metric-value">
+            {{service}}
+          </span>
+        </div>
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            API:
+          </span>
+          <span class="monitor-metric-value">
+            {{api}}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
+<div class="cf-app-segment" id="monitor-metrics">
+</div>
