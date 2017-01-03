@@ -4,15 +4,15 @@
 monitor_services = []
 
 if BGSService.prevalidate
-  monitor_services.insert(BGSService.new)
+  monitor_services.push(BGSService.new)
 end
 
 if VacolsService.prevalidate
-  monitor_services.insert(VacolsService.new)
+  monitor_services.push(VacolsService.new)
 end
 
 if VBMSService.prevalidate
-  monitor_services.insert(VBMSService.new)
+  monitor_services.push(VBMSService.new)
 end
 
 monitor_services.each do |service|
