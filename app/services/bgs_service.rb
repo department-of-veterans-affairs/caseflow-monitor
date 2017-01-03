@@ -22,7 +22,7 @@ class BGSService < MonitorService
   end
 
   def self.prevalidate
-    return ENV["BGS_ENVIRONMENT"].present?
+    return ENV.key?("BGS_ENVIRONMENT")
   end
 
   private

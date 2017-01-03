@@ -24,7 +24,7 @@ class VBMSService < MonitorService
   end
 
   def self.prevalidate
-    return ENV["CONNECT_VBMS_URL"].present?
+    return ENV.key?("CONNECT_VBMS_URL")
   end
 
   def query_service

@@ -12,7 +12,7 @@ class VacolsService < MonitorService
   end
 
   def self.prevalidate
-    return ENV["VACOLS_DATABASE"].present?
+    return ENV.key?("VACOLS_DATABASE")
   end
 
   def query_service
