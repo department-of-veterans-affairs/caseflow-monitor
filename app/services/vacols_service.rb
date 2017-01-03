@@ -11,6 +11,10 @@ class VacolsService < MonitorService
     save
   end
 
+  def self.prevalidate
+    return ENV["VACOLS_DATABASE"].present?
+  end
+
   def query_service
     if @connection == nil
       ActiveRecord::Base.establish_connection(:production_vacols)

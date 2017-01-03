@@ -23,6 +23,10 @@ class VBMSService < MonitorService
     save
   end
 
+  def self.prevalidate
+    return ENV["CONNECT_VBMS_URL"].present?
+  end
+
   def query_service
 
     request = VBMS::Requests::ListDocuments.new(Rails.application.secrets.target_file_num)

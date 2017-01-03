@@ -1,11 +1,19 @@
 # One thread for background poll
 
 # Register the servicein this array to enable periodic query.
-monitor_services = [
-  BGSService.new,
-  VacolsService.new,
-  VBMSService.new
-]
+monitor_services = []
+
+if BGSService.prevalidate
+  monitor_services.insert(BGSService.new)
+end
+
+if VacolsService.prevalidate
+  monitor_services.insert(VacolsService.new)
+end
+
+if VBMSService.prevalidate
+  monitor_services.insert(VBMSService.new)
+end
 
 monitor_services.each do |service|
   Thread.new do

@@ -2,7 +2,7 @@ require "bgs"
 require "benchmark"
 
 class BGSService < MonitorService
-  attr_accessor :last_result
+  attr_accessor :last_result, :name
 
   def initialize
     super
@@ -19,6 +19,10 @@ class BGSService < MonitorService
     if !person[:first_nm].blank?
       @pass = true
     end
+  end
+
+  def self.prevalidate
+    return ENV["BGS_ENVIRONMENT"].present?
   end
 
   private
