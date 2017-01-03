@@ -1,24 +1,14 @@
-# README
+# Caseflow Monitor
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Caseflow Monitor is a Rails application that monitors the backend services used by [Caseflow](https://github.com/department-of-veterans-affairs/caseflow). The primary backend services includes
 
-Things you may want to cover:
+ - [BGS](https://github.com/department-of-veterans-affairs/ruby-bgs)
+ - VACOLS
+ - [VBMS](https://github.com/department-of-veterans-affairs/connect_vbms)
 
-* Ruby version
+Caseflow Monitor periodically pings the service endpoints to monitor its uptime and latency.
 
-* System dependencies
 
-* Configuration
+## Screenshot
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+![Screenshot of Caseflow Monitor](doc/caseflow-monitor-screenshot.png "Caseflow Monitor")
