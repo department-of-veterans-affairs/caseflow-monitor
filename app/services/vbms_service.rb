@@ -6,6 +6,8 @@ require 'xmlenc'
 require 'mail'
 require 'xmldsig'
 require 'benchmark'
+require 'objspace'
+require 'pp'
 
 class VBMSService < MonitorService
 
@@ -31,9 +33,6 @@ class VBMSService < MonitorService
 
     request = VBMS::Requests::ListDocuments.new(Rails.application.secrets.target_file_num)
     doc = @client.send_request(request)
-    if doc.length > 0
-      @pass = true
-    end
   end
 
 end
