@@ -1,12 +1,9 @@
-require "bgs"
-require "benchmark"
-
 class MonitorService
 
-  attr_accessor :name, :polling_rate_sec
+  attr_accessor :name, :polling_rate_sec, :time
 
+  @@name = "Unamed"
   def initialize
-    @name = "Unamed"
     @time = 0
     @latency = 0
     @latency10 = 0
@@ -39,6 +36,7 @@ class MonitorService
   end
 
   def query
+    @time = Time.now
     @pass = false
     latency = Benchmark.realtime do
       query_service
@@ -63,7 +61,6 @@ class MonitorService
       @latency60 += @latency / 60
     end
 
-    @time = Time.now
     @latency = latency
 
     save

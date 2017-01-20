@@ -1,14 +1,14 @@
-require "bgs"
+# require "bgs"
 require "benchmark"
 
 class BGSService < MonitorService
   attr_accessor :last_result, :name
+  @@name = "BGS"
 
   def initialize
     super
     @bgs_client = init_client
 
-    @name = "BGS"
     @service = "Person"
     @api = "findPersonByFileNumber"
     save

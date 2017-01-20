@@ -1,19 +1,19 @@
-require 'vbms'
-require 'httpclient'
-require 'httpi'
-require 'nokogiri'
-require 'xmlenc'
-require 'mail'
-require 'xmldsig'
-require 'benchmark'
+# require 'vbms'
+# require 'httpclient'
+# require 'httpi'
+# require 'nokogiri'
+# require 'xmlenc'
+# require 'mail'
+# require 'xmldsig'
+# require 'benchmark'
 
 class VBMSService < MonitorService
+  @@name = "VBMS"
 
   def initialize
     super
     @connection = nil
 
-    @name = "VBMS"
     @service = "VBMS"
     @api = "ListDocuments"
 

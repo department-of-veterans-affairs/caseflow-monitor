@@ -1,11 +1,11 @@
 require "benchmark"
 
 class VacolsService < MonitorService
+  @@name = "VACOLS"
   def initialize
     super
     @connection = nil
 
-    @name = "VACOLS"
     @service = "VACOLS"
     @api = "VACOLS.BRIEFF"
     save
