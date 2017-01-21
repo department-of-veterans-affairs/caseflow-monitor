@@ -1,12 +1,12 @@
-class Fakes::BGSService < MonitorService
+class Fakes::VacolsService < MonitorService
   attr_accessor :last_result
-  @@service_name = "BGS"
+  @@service_name = "VACOLS"
 
   def initialize
     super
     @name = @@service_name
-    @service = "Person"
-    @api = "findPersonByFileNumber"
+    @service = "VACOLS"
+    @api = "VACOLS.BRIEFF"
     save
   end
 
