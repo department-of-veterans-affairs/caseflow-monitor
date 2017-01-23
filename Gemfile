@@ -28,24 +28,20 @@ gem 'jquery-rails'
 gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
-# Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 3.0'
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
-
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
-
-gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git"
-gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git"
 
 
-gem 'activerecord-oracle_enhanced-adapter', '~> 1.7.0'
-gem 'ruby-oci8'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
+end
+
+
+group :production do
+  gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git"
+  gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git"
+  gem 'activerecord-oracle_enhanced-adapter', '~> 1.7.0'
+  gem 'ruby-oci8'
 end
 
 group :development do

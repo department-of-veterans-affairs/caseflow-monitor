@@ -1,8 +1,8 @@
-require "bgs"
 require "benchmark"
 
 class BGSService < MonitorService
   attr_accessor :last_result, :name
+  @@service_name = "BGS"
 
   def initialize
     super
@@ -19,6 +19,11 @@ class BGSService < MonitorService
     if !person[:first_nm].blank?
       @pass = true
     end
+  end
+
+
+  def self.service_name
+    @@service_name
   end
 
   def self.prevalidate
