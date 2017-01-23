@@ -1,11 +1,13 @@
 require "benchmark"
 
 class VacolsService < MonitorService
-  @@name = "VACOLS"
+  @@service_name = "VACOLS"
+
   def initialize
     super
     @connection = nil
 
+    @name = "VACOLS"
     @service = "VACOLS"
     @api = "VACOLS.BRIEFF"
     save
@@ -13,6 +15,11 @@ class VacolsService < MonitorService
 
   def self.prevalidate
     return ENV.key?("VACOLS_DATABASE")
+  end
+
+
+  def self.service_name
+    @@service_name
   end
 
   def query_service

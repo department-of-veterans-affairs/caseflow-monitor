@@ -13,6 +13,7 @@ class MonitorService
     @api = "api"
     @pass = false
     @polling_rate_sec = 300
+
   end
 
   def save

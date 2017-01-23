@@ -1,14 +1,14 @@
-# require "bgs"
 require "benchmark"
 
 class BGSService < MonitorService
   attr_accessor :last_result, :name
-  @@name = "BGS"
+  @@service_name = "BGS"
 
   def initialize
     super
     @bgs_client = init_client
 
+    @name = "BGS"
     @service = "Person"
     @api = "findPersonByFileNumber"
     save
@@ -19,6 +19,11 @@ class BGSService < MonitorService
     if !person[:first_nm].blank?
       @pass = true
     end
+  end
+
+
+  def self.service_name
+    @@service_name
   end
 
   def self.prevalidate

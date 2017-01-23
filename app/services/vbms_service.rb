@@ -1,19 +1,13 @@
-# require 'vbms'
-# require 'httpclient'
-# require 'httpi'
-# require 'nokogiri'
-# require 'xmlenc'
-# require 'mail'
-# require 'xmldsig'
-# require 'benchmark'
+require 'vbms'
 
 class VBMSService < MonitorService
-  @@name = "VBMS"
+  @@service_name = "VBMS"
 
   def initialize
     super
     @connection = nil
 
+    @name = "VBMS"
     @service = "VBMS"
     @api = "ListDocuments"
 
@@ -21,6 +15,11 @@ class VBMSService < MonitorService
       env_name: ENV["CONNECT_VBMS_ENV"]
     )
     save
+  end
+
+
+  def self.service_name
+    @@service_name
   end
 
   def self.prevalidate

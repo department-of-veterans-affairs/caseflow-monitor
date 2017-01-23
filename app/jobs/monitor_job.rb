@@ -37,6 +37,7 @@ class MonitorJob < ActiveJob::Base
   def setup_services
     monitor_services = []
     if Rails.env.development?
+      puts "loading up fake services\n\n\n\n"
       if Fakes::BGSService.prevalidate
         monitor_services.push(Fakes::BGSService)
       end
@@ -48,6 +49,7 @@ class MonitorJob < ActiveJob::Base
       end
 
     else
+      puts "loading up production services\n\n\n\n"
       if BGSService.prevalidate
         monitor_services.push(BGSService)
       end
@@ -78,7 +80,7 @@ class MonitorJob < ActiveJob::Base
           puts e.message
           puts exception.backtrace
         end
-        sleep 1
+        sleep 300
       end
     end
   end
@@ -88,7 +90,7 @@ class MonitorJob < ActiveJob::Base
       while 1 do
         @worker.each do |service_name, worker_data|
           duration = Time.now - worker_data[:service].time
-          if duration > 3
+          if duration > 300
             puts "Zombie detected, killing thread and restarting #{worker_data[:thread]}"
             worker_data[:thread].kill
             worker_data[:thread].join 1

@@ -47,7 +47,10 @@ module CaseflowMonitor
     end
 
     config.autoload_paths += Dir[Rails.root.join('app', 'models', '{**}')]
-    config.autoload_paths += Dir[Rails.root.join('lib', 'fakes')]
+
+    if Rails.env.development?
+      config.autoload_paths += Dir[Rails.root.join('lib', 'fakes')]
+    end
 
   end
 end
