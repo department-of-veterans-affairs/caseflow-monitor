@@ -4,16 +4,27 @@ class MonitorService
 
   @@name = "Unamed"
   def initialize
-    @time = 0
-    @latency = 0
-    @latency10 = 0
-    @latency60 = 0
-    @count = 0
-    @service = "service"
-    @api = "api"
-    @pass = false
-    @polling_rate_sec = 300
 
+    # Read from last result cache, and use that as base line if it exists.
+    last_result = Rails.cache.read(@name)
+
+    if last_result == nil
+      @time = 0
+      @latency = 0
+      @latency10 = 0
+      @latency60 = 0
+      @count = 0
+      @pass = false
+    else
+      @time = last_result[:time]
+      @latency = last_result[:latency]
+      @latency10 = last_result[:latency10]
+      @latency60 = last_result[:latency60]
+      @count = last_result[:count]
+      @pass = last_result[:pass]
+    end
+
+    save    
   end
 
   def save

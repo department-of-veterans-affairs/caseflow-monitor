@@ -87,10 +87,12 @@ class MonitorJob < ActiveJob::Base
 
   def setup_zombie_monitor
     Thread.new do
+      sleep 60
       while 1 do
         @worker.each do |service_name, worker_data|
           duration = Time.now - worker_data[:service].time
-          if duration > 300
+          puts "Duration for #{worker_data[:service].name} = #{worker_data[:service].time}"
+          if duration > 600
             puts "Zombie detected, killing thread and restarting #{worker_data[:thread]}"
             worker_data[:thread].kill
             worker_data[:thread].join 1
