@@ -8,23 +8,26 @@ class MonitorService
     # Read from last result cache, and use that as base line if it exists.
     last_result = Rails.cache.read(@name)
 
+
     if last_result == nil
       @time = 0
       @latency = 0
       @latency10 = 0
       @latency60 = 0
       @count = 0
+      @failed_count = 0
       @pass = false
     else
       @time = last_result[:time]
-      @latency = last_result[:latency]
-      @latency10 = last_result[:latency10]
-      @latency60 = last_result[:latency60]
-      @count = last_result[:count]
+      @latency = last_result[:latency] || 0
+      @latency10 = last_result[:latency10] || 0
+      @latency60 = last_result[:latency60] || 0
+      @count = last_result[:count] || 0
+      @failed_count = last_result[:failed_count] || 0
       @pass = last_result[:pass]
     end
 
-    save    
+    save
   end
 
   def save
@@ -34,7 +37,8 @@ class MonitorService
       latency: @latency,
       service: @service,
       api: @api,
-      pass: @pass
+      pass: @pass,
+      count: @count
     }
 
     if @count >= 10
@@ -45,6 +49,10 @@ class MonitorService
       last_result[:latency60] = @latency60
     end
     Rails.cache.write(@name, last_result)
+  end
+
+  def failed
+
   end
 
   def query
