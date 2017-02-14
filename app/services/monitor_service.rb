@@ -38,7 +38,8 @@ class MonitorService
       service: @service,
       api: @api,
       pass: @pass,
-      count: @count
+      count: @count,
+      failed_count: @failed_count
     }
 
     if @count >= 10
