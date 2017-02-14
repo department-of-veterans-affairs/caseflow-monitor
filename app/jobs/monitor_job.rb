@@ -80,7 +80,7 @@ class MonitorJob < ActiveJob::Base
           service.query
           puts "#{service.name} query done"
         rescue Exception => e
-          service.save
+          service.failed
           puts "run_query failed\n\n\n\n"
           puts e.message
           puts e.backtrace
@@ -96,9 +96,8 @@ class MonitorJob < ActiveJob::Base
       puts "running zombie monitor thread"
       loop do
         sleep 60
-        begin
-          puts "in loop"
-          @worker.each do |service_name, worker_data|
+        @worker.each do |service_name, worker_data|
+          begin
             puts "in worker loop"
             duration = Time.now - worker_data[:service].time
             puts "duration for #{worker_data[:service]} is #{duration}"
@@ -109,16 +108,13 @@ class MonitorJob < ActiveJob::Base
               run_query(worker_data[:serviceClass])
             end
             puts "worker loop done"
+          rescue Exception => e
+            worker_data[:service].failed
+            puts e.message
+            puts e.backtrace
           end
-          puts "get here!!!!!!"
-        rescue Exception => e
-          puts "run_query failed\n\n\n\n"
-          puts e.message
-          puts e.backtrace
         end
-        puts "would it get here????"
       end
     end
   end
-
 end

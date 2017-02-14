@@ -52,7 +52,8 @@ class MonitorService
   end
 
   def failed
-
+    @failed_count += 1
+    save
   end
 
   def query
