@@ -52,11 +52,11 @@ class MonitorJob < ActiveJob::Base
     else
       puts "loading up production services\n\n\n\n"
       if BGSService.prevalidate
-       # monitor_services.push(BGSService)
+        monitor_services.push(BGSService)
       end
 
       if VacolsService.prevalidate
-        #monitor_services.push(VacolsService)
+        monitor_services.push(VacolsService)
       end
 
       if VBMSService.prevalidate
@@ -85,7 +85,7 @@ class MonitorJob < ActiveJob::Base
           puts e.message
           puts e.backtrace
         end
-        sleep 1
+        sleep 30
       end
     end
   end
@@ -101,7 +101,7 @@ class MonitorJob < ActiveJob::Base
             puts "in worker loop"
             duration = Time.now - worker_data[:service].time
             puts "duration for #{worker_data[:service]} is #{duration}"
-            if duration > 30
+            if duration > 120
               puts "Zombie detected, killing thread and restarting #{worker_data[:thread]}"
               worker_data[:service].failed
               worker_data[:thread].kill
