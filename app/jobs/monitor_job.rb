@@ -103,13 +103,13 @@ class MonitorJob < ActiveJob::Base
             puts "duration for #{worker_data[:service]} is #{duration}"
             if duration > 30
               puts "Zombie detected, killing thread and restarting #{worker_data[:thread]}"
+              worker_data[:service].failed
               worker_data[:thread].kill
               worker_data[:thread].join 1
               run_query(worker_data[:serviceClass])
             end
             puts "worker loop done"
-          rescue Exception => e
-            worker_data[:service].failed
+          rescue Exception => e            
             puts e.message
             puts e.backtrace
           end
