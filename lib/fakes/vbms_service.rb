@@ -2,12 +2,11 @@ class Fakes::VBMSService < MonitorService
   attr_accessor :last_result
   @@service_name = "VBMS"
 
-  def initialize
-    super
+  def initialize    
     @name = @@service_name
     @service = "VBMS"
     @api = "ListDocuments"
-    save
+    super
   end
 
   def self.service_name
@@ -15,7 +14,6 @@ class Fakes::VBMSService < MonitorService
   end
 
   def query_service
-    # sleep Random.rand(5)
     @pass = true
   end
 

@@ -12,16 +12,34 @@
       url: 'sample',
       success: function(data) {
         $( "#monitor-metrics" ).html("");
+        var count = 0;
+        var grid;
         $.each(data, function (serviceName, metricsData) {
-
+          
+          if ( count % 3 === 0) {
+            grid = document.createElement('div');
+            grid.className='usa-grid monitor-row';
+            grid.id = "monitor-block-" + count;
+            $( "#monitor-metrics" ).append(grid);
+          }
           metricsData.latency = roundLatency(metricsData.latency)
           metricsData.latency10 = roundLatency(metricsData.latency10)
           metricsData.latency60 = roundLatency(metricsData.latency60)
+          metricsData.up_rate_5 = roundLatency(metricsData.up_rate_5)
+
+          if( metricsData.up_rate_5 > 90) {
+            metricsData.statusGreen = true;
+          } else if( metricsData.up_rate_5 > 50) {
+            metricsData.statusWarn = true;
+          } else {
+            metricsData.statusDown = true;
+          }
           var source = document.getElementById("metrics-template").innerHTML;
           var template = Handlebars.compile(source);
           var output = template(metricsData);
-          $( "#monitor-metrics" ).append(output);
+          $('#' + grid.id).append(output);
           $("time.timeago").timeago();
+          ++count;
         });
       },
       complete: function() {
@@ -36,19 +54,18 @@
 
 <script id="metrics-template" type="text/x-handlebars-template">
   <div class="usa-width-one-third">
-    <div class="monitor-block">
+    <div class="monitor-block {{#if statusDown}}status-border-down{{/if}}  {{#if statusWarn}}status-border-unstable{{/if}}">
       <div class="monitor-block-title">
-        {{#if pass}}
-          <%= content_tag(:span, nil, :class => "cf-logo-image #{logo_class}") %>{{name}}
-        {{else}}
-          <%= content_tag(:span, nil, :class => "cf-logo-image monitor-warning-icon") %>{{name}}
+        {{#if statusGreen}}
+          <i class="status-circle status-circle-up"></i> {{name}}
         {{/if}}
-      </div>
-      <div class="monitor-block-body">
-        <div class="monitor-metric">
-          <span class="monitor-metric-label">
-            Last Checked:
-          </span>
+        {{#if statusWarn}}
+          <i class="status-circle status-circle-unstable"></i>{{name}}
+        {{/if}}
+        {{#if statusDown}}
+          <i class="status-circle status-circle-down"></i>{{name}}
+        {{/if}}
+        <div class="monitor-last-check">Last Checked
           <span class="monitor-metric-value">
             {{#if time}}
               <time class="timeago" datetime="{{time}}"></time>
@@ -57,16 +74,22 @@
             {{/if}}
           </span>
         </div>
+      </div>
+      <div class="monitor-block-body">
         <div class="monitor-metric">
           <span class="monitor-metric-label">
-            Status:
+            API:
           </span>
           <span class="monitor-metric-value">
-            {{#if pass}}
-              Up
-            {{else}}
-              Down
-            {{/if}}
+            {{api}}
+          </span>
+        </div>
+        <div class="monitor-metric">
+          <span class="monitor-metric-label">
+            Service:
+          </span>
+          <span class="monitor-metric-value">
+            {{service}}
           </span>
         </div>
         <div class="monitor-metric">
@@ -81,7 +104,7 @@
         {{#if latency10}}
         <div class="monitor-metric">
           <span class="monitor-metric-label">
-            Latency<sub>[MA10]</sub>:
+            Latency<sub>[10]</sub>:
           </span>
           <span class="monitor-metric-value">
             {{latency10}} s
@@ -91,7 +114,7 @@
         {{#if latency60}}
         <div class="monitor-metric">
           <span class="monitor-metric-label">
-            Latency<sub>[MA60]</sub>:
+            Latency<sub>[60]</sub>:
           </span>
           <span class="monitor-metric-value">
             {{latency60}} s
@@ -100,26 +123,22 @@
         {{/if}}
         <div class="monitor-metric">
           <span class="monitor-metric-label">
-            Service:
+            Status:
           </span>
           <span class="monitor-metric-value">
-            {{service}}
+            {{#if pass}}
+              Up
+            {{else}}
+              Down
+            {{/if}}
           </span>
         </div>
         <div class="monitor-metric">
           <span class="monitor-metric-label">
-            API:
+           Up Rate<sub>[5]</sub>:
           </span>
           <span class="monitor-metric-value">
-            {{api}}
-          </span>
-        </div>
-        <div class="monitor-metric">
-          <span class="monitor-metric-label">
-            Failed Count:
-          </span>
-          <span class="monitor-metric-value">
-            {{failed_count}} / {{count}}
+            {{up_rate_5}} %
           </span>
         </div>
       </div>

@@ -1,11 +1,11 @@
-class Fakes::BGSService < MonitorService
+class Fakes::UnreliableService < MonitorService
   attr_accessor :last_result
-  @@service_name = "BGS"
+  @@service_name = "Unreliable"
 
   def initialize
     @name = @@service_name
-    @service = "Person"
-    @api = "findPersonByFileNumber"
+    @service = "Unreliable"
+    @api = "mayFailAtAnyTime"
     super
   end
 
@@ -14,8 +14,8 @@ class Fakes::BGSService < MonitorService
   end
 
   def query_service
-    # sleep Random.rand(5)
-    @pass = true
+    # 1/3 chance of failure
+    @pass = (Random.rand(3) == 1)
   end
 
   def self.prevalidate

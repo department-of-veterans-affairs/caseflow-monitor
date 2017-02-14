@@ -15,7 +15,7 @@ class MonitorService
       @latency10 = 0
       @latency60 = 0
       @count = 0
-      @failed_count = 0
+      @failed_rate_5 = 0
       @pass = false
     else
       @time = last_result[:time]
@@ -23,7 +23,7 @@ class MonitorService
       @latency10 = last_result[:latency10] || 0
       @latency60 = last_result[:latency60] || 0
       @count = last_result[:count] || 0
-      @failed_count = last_result[:failed_count] || 0
+      @failed_rate_5 = last_result[:failed_rate_5] || 0
       @pass = last_result[:pass]
     end
 
@@ -39,7 +39,7 @@ class MonitorService
       api: @api,
       pass: @pass,
       count: @count,
-      failed_count: @failed_count
+      up_rate_5: (1 - @failed_rate_5) * 100
     }
 
     if @count >= 10
@@ -53,7 +53,8 @@ class MonitorService
   end
 
   def failed
-    @failed_count += 1
+    @failed_rate_5 -= @failed_rate_5 / 5.0
+    @failed_rate_5 += 1 / 5.0
     save
   end
 
@@ -86,6 +87,8 @@ class MonitorService
     @latency = latency
 
     save
+
+    @pass
   end
 
   def query_service

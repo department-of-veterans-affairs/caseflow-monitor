@@ -48,6 +48,15 @@ class MonitorJob < ActiveJob::Base
       if Fakes::VBMSService.prevalidate
         monitor_services.push(Fakes::VBMSService)
       end
+      if Fakes::LaggyService.prevalidate
+        monitor_services.push(Fakes::LaggyService)
+      end
+      if Fakes::UnreliableService.prevalidate
+        monitor_services.push(Fakes::UnreliableService)
+      end
+      if Fakes::AlwaysDownService.prevalidate
+        monitor_services.push(Fakes::AlwaysDownService)
+      end
 
     else
       puts "loading up production services\n\n\n\n"
@@ -68,16 +77,20 @@ class MonitorJob < ActiveJob::Base
 
   def run_query(serviceClass)
     th = Thread.new do
+      service = serviceClass.new
       while 1 do
         begin
-          service = serviceClass.new
           puts "#{service.name} query started"
           @worker[serviceClass.service_name.to_sym] = {
             :thread => th,
             :service => service,
             :serviceClass => serviceClass
           }
-          service.query
+          passed = service.query
+
+          if passed == false
+            service.failed
+          end
           puts "#{service.name} query done"
         rescue Exception => e
           service.failed

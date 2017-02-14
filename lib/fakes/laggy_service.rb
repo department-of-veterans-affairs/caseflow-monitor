@@ -1,11 +1,11 @@
-class Fakes::VacolsService < MonitorService
+class Fakes::LaggyService < MonitorService
   attr_accessor :last_result
-  @@service_name = "VACOLS"
+  @@service_name = "Laggy"
 
-  def initialize    
+  def initialize
     @name = @@service_name
-    @service = "VACOLS"
-    @api = "VACOLS.BRIEFF"
+    @service = "Laggy"
+    @api = "runVerySlowly"
     super
   end
 
@@ -14,7 +14,7 @@ class Fakes::VacolsService < MonitorService
   end
 
   def query_service
-    # sleep Random.rand(5)
+    sleep Random.rand(120)
     @pass = true
   end
 
