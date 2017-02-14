@@ -60,10 +60,10 @@ class MonitorService
   def query
     @time = Time.now
     @pass = false
+    @count += 1
     latency = Benchmark.realtime do
       query_service
     end
-    @count += 1
 
     @latency = latency
 
