@@ -4,16 +4,30 @@ class MonitorService
 
   @@name = "Unamed"
   def initialize
-    @time = 0
-    @latency = 0
-    @latency10 = 0
-    @latency60 = 0
-    @count = 0
-    @service = "service"
-    @api = "api"
-    @pass = false
-    @polling_rate_sec = 300
 
+    # Read from last result cache, and use that as base line if it exists.
+    last_result = Rails.cache.read(@name)
+
+
+    if last_result == nil
+      @time = 0
+      @latency = 0
+      @latency10 = 0
+      @latency60 = 0
+      @count = 0
+      @failed_rate_5 = 0
+      @pass = false
+    else
+      @time = last_result[:time]
+      @latency = last_result[:latency] || 0
+      @latency10 = last_result[:latency10] || 0
+      @latency60 = last_result[:latency60] || 0
+      @count = last_result[:count] || 0
+      @failed_rate_5 = last_result[:failed_rate_5] || 0
+      @pass = last_result[:pass]
+    end
+
+    save
   end
 
   def save
@@ -39,13 +53,19 @@ class MonitorService
     Rails.cache.write(@name, last_result)
   end
 
+  def failed
+    @failed_rate_5 -= @failed_rate_5 / 5.0
+    @failed_rate_5 += 1 / 5.0
+    save
+  end
+
   def query
     @time = Time.now
     @pass = false
+    @count += 1
     latency = Benchmark.realtime do
       query_service
     end
-    @count += 1
 
     if @pass == true
       @failed_rate_5 -= @failed_rate_5 / 5.0
@@ -75,6 +95,8 @@ class MonitorService
     @latency = latency
 
     save
+
+    @pass
   end
 
   def query_service

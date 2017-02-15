@@ -21,11 +21,12 @@ class MonitorJob < ActiveJob::Base
         run_query(serviceClass)
       end
 
+      puts "setting up zombie monitor"
       setup_zombie_monitor
 
     rescue Exception => e
       puts e.message
-      puts exception.backtrace
+      puts e.backtrace
     end
 
   end
@@ -47,6 +48,15 @@ class MonitorJob < ActiveJob::Base
       if Fakes::VBMSService.prevalidate
         monitor_services.push(Fakes::VBMSService)
       end
+      if Fakes::LaggyService.prevalidate
+        monitor_services.push(Fakes::LaggyService)
+      end
+      if Fakes::UnreliableService.prevalidate
+        monitor_services.push(Fakes::UnreliableService)
+      end
+      if Fakes::AlwaysDownService.prevalidate
+        monitor_services.push(Fakes::AlwaysDownService)
+      end
 
     else
       puts "loading up production services\n\n\n\n"
@@ -67,39 +77,57 @@ class MonitorJob < ActiveJob::Base
 
   def run_query(serviceClass)
     th = Thread.new do
+      service = serviceClass.new
       while 1 do
         begin
-          service = serviceClass.new
+          puts "#{service.name} query started"
           @worker[serviceClass.service_name.to_sym] = {
             :thread => th,
             :service => service,
             :serviceClass => serviceClass
           }
-          service.query
+          passed = service.query
+
+          if passed == false
+            service.failed
+          end
+          puts "#{service.name} query done"
         rescue Exception => e
+          service.failed
+          puts "run_query failed\n\n\n\n"
           puts e.message
-          puts exception.backtrace
+          puts e.backtrace
         end
-        sleep 300
+        sleep 30
       end
     end
   end
 
   def setup_zombie_monitor
+    puts "setting up zombie monitor"
     Thread.new do
-      while 1 do
+      puts "running zombie monitor thread"
+      loop do
+        sleep 60
         @worker.each do |service_name, worker_data|
-          duration = Time.now - worker_data[:service].time
-          if duration > 300
-            puts "Zombie detected, killing thread and restarting #{worker_data[:thread]}"
-            worker_data[:thread].kill
-            worker_data[:thread].join 1
-            run_query(worker_data[:serviceClass])
+          begin
+            puts "in worker loop"
+            duration = Time.now - worker_data[:service].time
+            puts "duration for #{worker_data[:service]} is #{duration}"
+            if duration > 120
+              puts "Zombie detected, killing thread and restarting #{worker_data[:thread]}"
+              worker_data[:service].failed
+              worker_data[:thread].kill
+              worker_data[:thread].join 1
+              run_query(worker_data[:serviceClass])
+            end
+            puts "worker loop done"
+          rescue Exception => e            
+            puts e.message
+            puts e.backtrace
           end
         end
-        sleep 1
       end
     end
   end
-
 end

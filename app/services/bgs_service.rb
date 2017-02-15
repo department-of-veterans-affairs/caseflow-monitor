@@ -5,13 +5,13 @@ class BGSService < MonitorService
   @@service_name = "BGS"
 
   def initialize
-    super
+
     @bgs_client = init_client
 
     @name = "BGS"
     @service = "Person"
     @api = "findPersonByFileNumber"
-    save
+    super
   end
 
   def query_service

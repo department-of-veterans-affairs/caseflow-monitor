@@ -4,13 +4,12 @@ class VacolsService < MonitorService
   @@service_name = "VACOLS"
 
   def initialize
-    super
     @connection = nil
 
     @name = "VACOLS"
     @service = "VACOLS"
     @api = "VACOLS.BRIEFF"
-    save
+    super
   end
 
   def self.prevalidate

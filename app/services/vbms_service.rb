@@ -4,7 +4,6 @@ class VBMSService < MonitorService
   @@service_name = "VBMS"
 
   def initialize
-    super
     @connection = nil
 
     @name = "VBMS"
@@ -14,7 +13,7 @@ class VBMSService < MonitorService
     @client = VBMS::Client.from_env_vars(
       env_name: ENV["CONNECT_VBMS_ENV"]
     )
-    save
+    super
   end
 
 
