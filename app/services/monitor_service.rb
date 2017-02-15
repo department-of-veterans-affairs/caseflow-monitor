@@ -23,14 +23,10 @@ class MonitorService
       latency: @latency,
       service: @service,
       api: @api,
-<<<<<<< Updated upstream
-      pass: @pass
-=======
       pass: @pass,
       count: @count,
       up_rate_5: (1 - @failed_rate_5) * 100,
       failed_rate_5: @failed_rate_5
->>>>>>> Stashed changes
     }
 
     if @count >= 10
