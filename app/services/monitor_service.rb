@@ -39,7 +39,8 @@ class MonitorService
       api: @api,
       pass: @pass,
       count: @count,
-      up_rate_5: (1 - @failed_rate_5) * 100
+      up_rate_5: (1 - @failed_rate_5) * 100,
+      failed_rate_5: @failed_rate_5
     }
 
     if @count >= 10
@@ -64,6 +65,13 @@ class MonitorService
     @count += 1
     latency = Benchmark.realtime do
       query_service
+    end
+
+    if @pass == true
+      @failed_rate_5 -= @failed_rate_5 / 5.0
+      if @failed_rate_5 < 0
+        @failed_rate_5 = 0
+      end
     end
 
     @latency = latency
