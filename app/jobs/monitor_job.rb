@@ -12,6 +12,8 @@ class MonitorJob < ActiveJob::Base
       # setup all the services that need to be monitored
       monitor_services = setup_services
 
+      setup_prometheus_metrics
+
       # Register all services into a global array. This array is expected to be
       # read only, and is thread-safe for updates.
       Rails.application.config.monitor_services = monitor_services
@@ -33,6 +35,20 @@ class MonitorJob < ActiveJob::Base
 
   def max_attempts
     1
+  end
+
+  def setup_prometheus_metrics
+    prometheus = Prometheus::Client.registry
+    prometheus.register(
+      Prometheus::Client::Counter.new(:successful_query_total, 'Total number of successful queries')
+    )
+    prometheus.register(
+      Prometheus::Client::Counter.new(:failed_query_total, 'Total number of failed queries')
+    )
+
+    prometheus.register(
+      Prometheus::Client::Gauge.new(:latency, 'The latency of each query')
+    )
   end
 
   def setup_services

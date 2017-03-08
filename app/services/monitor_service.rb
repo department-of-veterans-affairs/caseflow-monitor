@@ -94,9 +94,35 @@ class MonitorService
 
     @latency = latency
 
+    self.update_prometheus_metrics
+
     save
 
     @pass
+  end
+
+
+  # Summarize the performance metrics into Prometheus counters and
+  # gauges. 
+  # This method should only be called after query is completed.
+  def update_prometheus_metrics
+    successful_query_ctr = Prometheus::Client.registry.get(:successful_query_total)
+    failed_query_ctr = Prometheus::Client.registry.get(:failed_query_total)
+    latency_gauge = Prometheus::Client.registry.get(:latency)
+
+    # Tag to be used to uniquely identify this series
+    tag = { 
+      name: @name, 
+      api: @api 
+    }
+    
+    if @pass == true
+      successful_query_ctr.increment(tag)
+    else 
+      failed_query_ctr.increment(tag)
+    end
+
+    latency_gauge.set(tag, @latency)    
   end
 
   def query_service
