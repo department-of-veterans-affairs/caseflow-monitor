@@ -103,12 +103,12 @@ class MonitorService
 
 
   # Summarize the performance metrics into Prometheus counters and
-  # gauges. 
+  # summary. 
   # This method should only be called after query is completed.
   def update_prometheus_metrics
     successful_query_ctr = Prometheus::Client.registry.get(:successful_query_total)
     failed_query_ctr = Prometheus::Client.registry.get(:failed_query_total)
-    latency_gauge = Prometheus::Client.registry.get(:latency)
+    latency_summary = Prometheus::Client.registry.get(:latency)
 
     # Tag to be used to uniquely identify this series
     tag = { 
@@ -122,7 +122,7 @@ class MonitorService
       failed_query_ctr.increment(tag)
     end
 
-    latency_gauge.set(tag, @latency)    
+    latency_summary.observe(tag, @latency)
   end
 
   def query_service

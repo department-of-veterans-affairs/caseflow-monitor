@@ -18,9 +18,20 @@
   <header>
     <nav class="cf-nav">
       <div class="usa-grid-full">
-        <a href="/"><h1 class="cf-logo"><%= content_tag(:span, nil, :class => "cf-logo-image #{logo_class}") %>Caseflow</h1></a>
-        <h2 id="page-title" class="cf-application-title">Monitor</h2>
-
+        <h1 class="cf-logo"><%= content_tag(:span, nil, :class => "cf-logo-image #{logo_class}") %>Caseflow</h1>
+        <h2 id="page-title" class="cf-application-title">Monitor </h2>
+          <div class="cf-dropdown cf-nav-dropdown cf-application-title">
+            <% case ENV['DEPLOY_ENV'] when "demo" %>
+              Demo
+            <% when "uat" %>
+              UAT
+            <% when "preprod" %>
+              Pre-Production
+            <% when "prod" %>
+              Production
+            <% end %>
+            Environment
+          </div>
       </div>
     </nav>
   </header>

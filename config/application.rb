@@ -40,6 +40,9 @@ module CaseflowMonitor
     # Do not swallow errors in after_commit/after_rollback callbacks.
     # config.active_record.raise_in_transactional_callbacks = true
 
+    # By default, we are likely to be in demo environment.
+    ENV['DEPLOY_ENV'] = ENV['DEPLOY_ENV'] || 'demo'
+
     config.autoload_paths << Rails.root.join('lib')
 
     if Rails.env.production?

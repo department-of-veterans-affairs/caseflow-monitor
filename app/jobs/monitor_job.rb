@@ -1,3 +1,7 @@
+# This job sets up all monitoring threads for all target services. It runs on 
+# Rails startup, and all monitoring threads will persist through the lifetime 
+# of the application.
+
 class MonitorJob < ActiveJob::Base
   queue_as :default
 
@@ -23,7 +27,6 @@ class MonitorJob < ActiveJob::Base
         run_query(serviceClass)
       end
 
-      puts "setting up zombie monitor"
       setup_zombie_monitor
 
     rescue Exception => e
@@ -47,10 +50,13 @@ class MonitorJob < ActiveJob::Base
     )
 
     prometheus.register(
-      Prometheus::Client::Gauge.new(:latency, 'The latency of each query')
+      Prometheus::Client::Summary.new(:latency, 'The latency of each query')
     )
   end
 
+  # Setup all target monitoring services. The target services will be 
+  # determined by the RAILS_ENV.
+  # All new services should be registered here.
   def setup_services
     monitor_services = []
     if Rails.env.development?
@@ -119,17 +125,17 @@ class MonitorJob < ActiveJob::Base
     end
   end
 
+  # Sets up a monitor thread that monitors all zombies threads. In the normal
+  # world, this is not needed. However, Monitor is designed to be more
+  # robust than the application it is monitoring. Therefore, any thread hung
+  # will be protected.
   def setup_zombie_monitor
-    puts "setting up zombie monitor"
     Thread.new do
-      puts "running zombie monitor thread"
       loop do
         sleep 60
         @worker.each do |service_name, worker_data|
           begin
-            puts "in worker loop"
             duration = Time.now - worker_data[:service].time
-            puts "duration for #{worker_data[:service]} is #{duration}"
             if duration > 120
               puts "Zombie detected, killing thread and restarting #{worker_data[:thread]}"
               worker_data[:service].failed
@@ -137,7 +143,6 @@ class MonitorJob < ActiveJob::Base
               worker_data[:thread].join 1
               run_query(worker_data[:serviceClass])
             end
-            puts "worker loop done"
           rescue Exception => e            
             puts e.message
             puts e.backtrace
