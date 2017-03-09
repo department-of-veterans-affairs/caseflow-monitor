@@ -13,10 +13,11 @@ class MonitorJob < ActiveJob::Base
   def perform()
 
     begin
+      setup_prometheus_metrics
+      
       # setup all the services that need to be monitored
       monitor_services = setup_services
 
-      setup_prometheus_metrics
 
       # Register all services into a global array. This array is expected to be
       # read only, and is thread-safe for updates.
@@ -48,9 +49,11 @@ class MonitorJob < ActiveJob::Base
     prometheus.register(
       Prometheus::Client::Counter.new(:failed_query_total, 'Total number of failed queries')
     )
-
     prometheus.register(
-      Prometheus::Client::Summary.new(:latency, 'The latency of each query')
+      Prometheus::Client::Gauge.new(:latency_gauge, 'Samples of query latency')
+    )
+    prometheus.register(
+      Prometheus::Client::Summary.new(:latency_summary, 'Summary of query latency')
     )
   end
 

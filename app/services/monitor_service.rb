@@ -26,6 +26,8 @@ class MonitorService
       @failed_rate_5 = last_result[:failed_rate_5] || 0
       @pass = last_result[:pass]
     end
+    
+    initialize_prometheus_metrics
 
     save
   end
@@ -101,6 +103,25 @@ class MonitorService
     @pass
   end
 
+  # Remark
+  # This is a hack that initialize a Counter to 0. This workaround is needed
+  # because the Ruby Prometheus client does not report a Counter series if
+  # it has never been updated (even if it is registered). If the series
+  # does not exist, Grafana gives out warning. To workaround this, just
+  # initialize all metrics to its default value (or 0).
+  def initialize_prometheus_metrics
+    # Tag to be used to uniquely identify this series
+    tag = { 
+      name: @name, 
+      api: @api 
+    }
+    successful_query_ctr = Prometheus::Client.registry.get(:successful_query_total)
+    successful_query_ctr.increment(tag, successful_query_ctr.get(tag))
+    
+    failed_query_ctr = Prometheus::Client.registry.get(:failed_query_total)
+    failed_query_ctr.increment(tag, failed_query_ctr.get(tag))
+  end
+
 
   # Summarize the performance metrics into Prometheus counters and
   # summary. 
@@ -108,7 +129,8 @@ class MonitorService
   def update_prometheus_metrics
     successful_query_ctr = Prometheus::Client.registry.get(:successful_query_total)
     failed_query_ctr = Prometheus::Client.registry.get(:failed_query_total)
-    latency_summary = Prometheus::Client.registry.get(:latency)
+    latency_summary = Prometheus::Client.registry.get(:latency_summary)
+    latency_gauge = Prometheus::Client.registry.get(:latency_gauge)
 
     # Tag to be used to uniquely identify this series
     tag = { 
@@ -123,6 +145,7 @@ class MonitorService
     end
 
     latency_summary.observe(tag, @latency)
+    latency_gauge.set(tag, @latency)
   end
 
   def query_service
