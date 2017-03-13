@@ -58,6 +58,8 @@ class MonitorService
   def failed
     @failed_rate_5 -= @failed_rate_5 / 5.0
     @failed_rate_5 += 1 / 5.0
+
+    self.update_prometheus_metrics
     save
   end
 

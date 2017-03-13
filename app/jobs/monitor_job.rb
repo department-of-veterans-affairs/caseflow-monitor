@@ -82,6 +82,9 @@ class MonitorJob < ActiveJob::Base
       if Fakes::AlwaysDownService.prevalidate
         monitor_services.push(Fakes::AlwaysDownService)
       end
+      if Fakes::HungService.prevalidate
+        monitor_services.push(Fakes::HungService)
+      end
 
     else
       puts "loading up production services\n\n\n\n"
