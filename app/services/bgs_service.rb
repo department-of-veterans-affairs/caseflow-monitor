@@ -8,7 +8,7 @@ class BGSService < MonitorService
 
     @bgs_client = init_client
 
-    @name = "BGS"
+    @name = @@service_name
     @service = "Person"
     @api = "findPersonByFileNumber"
     super

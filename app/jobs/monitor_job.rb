@@ -73,6 +73,9 @@ class MonitorJob < ActiveJob::Base
       if Fakes::VBMSService.prevalidate
         monitor_services.push(Fakes::VBMSService)
       end
+      if Fakes::VBMSServiceFindDocumentReferenceSeries.prevalidate
+        monitor_services.push(Fakes::VBMSServiceFindDocumentReferenceSeries)
+      end
       if Fakes::LaggyService.prevalidate
         monitor_services.push(Fakes::LaggyService)
       end
@@ -98,6 +101,10 @@ class MonitorJob < ActiveJob::Base
 
       if VBMSService.prevalidate
         monitor_services.push(VBMSService)
+      end
+
+      if VBMSServiceFindDocumentReferenceSeries.prevalidate
+        monitor_services.push(VBMSServiceFindDocumentReferenceSeries)
       end
     end
     monitor_services
