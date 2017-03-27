@@ -6,7 +6,7 @@ class VacolsService < MonitorService
   def initialize
     @connection = nil
 
-    @name = "VACOLS"
+    @name = @@service_name
     @service = "VACOLS"
     @api = "VACOLS.BRIEFF"
     super

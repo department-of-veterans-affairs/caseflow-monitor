@@ -6,7 +6,7 @@ class VBMSServiceFindDocumentReferenceSeries < MonitorService
   def initialize
     @connection = nil
 
-    @name = "VBMS"
+    @name = @@service_name
     @service = "VBMS"
     @api = "FindDocumentSeriesReference"
 
