@@ -51,6 +51,9 @@ body {
   font-size: 1.7rem;
   border-bottom: 1px solid #d6d7d9;
   padding-bottom: 20px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .monitor-block-body {
