@@ -9,7 +9,7 @@
   function pollForMetrics() {
     $.ajax({
       dataType: "json",
-      url: 'sample',
+      url: "<%= Rails.application.config.app_url_prefix %>/sample",
       success: function(data) {
         $( "#monitor-metrics" ).html("");
         var count = 0;
