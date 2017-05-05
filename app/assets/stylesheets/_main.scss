@@ -7,28 +7,28 @@
 
 
 .cf-logo-image-default {
-  background-image: url(asset-path('caseflow-monitor-logo.svg'));
+  background-image: asset_url('caseflow-monitor-logo.svg');
   width: 32px;
   height: 32px;
   background-size: 32px 32px;
 }
 
 .cf-logo-image-monitor {
-  background-image: url(asset-path('caseflow-monitor-logo.svg'));
+  background-image: asset_url('caseflow-monitor-logo.svg');
   width: 32px;
   height: 32px;
   background-size: 32px 32px;
 }
 
 .monitor-warning-icon {
-  background-image: url(asset-path('warning.svg'));
+  background-image: asset_url('warning.svg');
   width: 32px;
   height: 32px;
   background-size: 32px 32px;
 }
 
 body {
-  font-size: 1.5rem;
+  font-size: 1.5rem; 
 }
 
 .feedback {

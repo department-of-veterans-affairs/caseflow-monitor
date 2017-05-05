@@ -55,5 +55,13 @@ module CaseflowMonitor
       config.autoload_paths += Dir[Rails.root.join('lib', 'fakes')]
     end
 
+    if ENV['APP_URL_PREFIX'] == nil
+      config.app_url_prefix = "";
+    else
+      config.app_url_prefix = ENV['APP_URL_PREFIX'];
+    end
+    
+    config.action_controller.relative_url_root = "#{config.app_url_prefix}/assets";
+    config.assets.prefix = "#{config.app_url_prefix}/assets";
   end
 end

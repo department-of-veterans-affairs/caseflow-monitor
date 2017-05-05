@@ -1,11 +1,10 @@
 Rails.application.routes.draw do
 
-  resource :monitor
+  root :to => redirect("#{Rails.application.config.app_url_prefix}")
 
-  resource :info
-
-  get "sample" => "sample#index"
-
-  root 'monitor#index'
+  scope "#{Rails.application.config.app_url_prefix}" do
+    get "/" => 'monitor#index'
+    get "/sample" => 'sample#index'
+  end
 
 end
