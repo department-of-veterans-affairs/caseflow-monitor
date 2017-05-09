@@ -8,7 +8,7 @@ class VBMSService < MonitorService
 
     @name = @@service_name
     @service = "VBMS"
-    @env = ENV['CONNECT_VBMS_ENV=']
+    @env = ENV['CONNECT_VBMS_ENV']
     @api = "ListDocuments"
 
     @client = VBMS::Client.from_env_vars(
