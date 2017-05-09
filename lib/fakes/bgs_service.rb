@@ -5,6 +5,7 @@ class Fakes::BGSService < MonitorService
   def initialize
     @name = @@service_name
     @service = "Person"
+    @env = "beplinktest"
     @api = "findPersonByFileNumber"
     super
   end

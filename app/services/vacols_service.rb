@@ -8,6 +8,7 @@ class VacolsService < MonitorService
 
     @name = @@service_name
     @service = "VACOLS"
+    @env = ENV['VACOLS_HOST=']
     @api = "VACOLS.BRIEFF"
     super
   end

@@ -5,6 +5,7 @@ class Fakes::VBMSService < MonitorService
   def initialize    
     @name = @@service_name
     @service = "VBMS"
+    @env = "uat"
     @api = "ListDocuments"
     super
   end
