@@ -10,7 +10,7 @@ class BGSService < MonitorService
 
     @name = @@service_name
     @service = "Person"
-    @env = ENV['BGS_ENVIRONMENT=']
+    @env = ENV['BGS_ENVIRONMENT']
     @api = "findPersonByFileNumber"
     super
   end
