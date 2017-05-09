@@ -5,6 +5,7 @@ class Fakes::VacolsService < MonitorService
   def initialize    
     @name = @@service_name
     @service = "VACOLS"
+    @env = "dev"
     @api = "VACOLS.BRIEFF"
     super
   end

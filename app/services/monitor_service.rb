@@ -17,6 +17,10 @@ class MonitorService
       @count = 0
       @failed_rate_5 = 0
       @pass = false
+
+      if @env == nil
+        @env = ENV['DEPLOY_ENV']
+      end
     else
       @time = last_result[:time]
       @latency = last_result[:latency] || 0
@@ -35,6 +39,7 @@ class MonitorService
   def save
     last_result = {
       name: @name,
+      env: @env,
       time: @time,
       latency: @latency,
       service: @service,
