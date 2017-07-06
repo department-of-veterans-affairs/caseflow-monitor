@@ -70,7 +70,7 @@ class MonitorJob < ActiveJob::Base
       puts "loading up production services\n\n\n\n"
       services = [BGSService, VacolsService, VBMSService, VBMSServiceFindDocumentReferenceSeries, VVAService]
     end
-    services.map do |service|
+    services.each do |service|
       monitor_services.push(service) if service.prevalidate
     end
     monitor_services
