@@ -1,5 +1,4 @@
 class Fakes::VVAService < MonitorService
-  attr_accessor :last_result
   @@service_name = "VVA"
 
   def initialize
