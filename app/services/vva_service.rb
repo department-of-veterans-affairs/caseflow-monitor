@@ -1,4 +1,4 @@
-require "benchmark"
+require "vva"
 
 class VVAService < MonitorService
   @@service_name = "VVA"
@@ -30,7 +30,7 @@ class VVAService < MonitorService
 
   private
 
-  def self.init_client
+  def init_client
     VVA::Services.new(
       wsdl: ENV['VVA_WSDL'],
       username: ENV["VVA_USERNAME"],

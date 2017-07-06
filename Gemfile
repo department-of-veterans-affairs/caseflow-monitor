@@ -37,11 +37,13 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
   gem 'dotenv-rails'
+  gem 'pry'
 end
 
 
 group :production do
   gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git"
+  gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git"
   gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git"
   gem 'activerecord-oracle_enhanced-adapter', '~> 1.7.0'
   gem 'ruby-oci8'
