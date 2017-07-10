@@ -1,5 +1,5 @@
-# This job sets up all monitoring threads for all target services. It runs on 
-# Rails startup, and all monitoring threads will persist through the lifetime 
+# This job sets up all monitoring threads for all target services. It runs on
+# Rails startup, and all monitoring threads will persist through the lifetime
 # of the application.
 
 class MonitorJob < ActiveJob::Base
@@ -14,7 +14,7 @@ class MonitorJob < ActiveJob::Base
 
     begin
       setup_prometheus_metrics
-      
+
       # setup all the services that need to be monitored
       monitor_services = setup_services
 
@@ -57,55 +57,21 @@ class MonitorJob < ActiveJob::Base
     )
   end
 
-  # Setup all target monitoring services. The target services will be 
+  # Setup all target monitoring services. The target services will be
   # determined by the RAILS_ENV.
   # All new services should be registered here.
   def setup_services
     monitor_services = []
     if Rails.env.development?
       puts "loading up fake services\n\n\n\n"
-      if Fakes::BGSService.prevalidate
-        monitor_services.push(Fakes::BGSService)
-      end
-      if Fakes::VacolsService.prevalidate
-        monitor_services.push(Fakes::VacolsService)
-      end
-      if Fakes::VBMSService.prevalidate
-        monitor_services.push(Fakes::VBMSService)
-      end
-      if Fakes::VBMSServiceFindDocumentReferenceSeries.prevalidate
-        monitor_services.push(Fakes::VBMSServiceFindDocumentReferenceSeries)
-      end
-      if Fakes::LaggyService.prevalidate
-        monitor_services.push(Fakes::LaggyService)
-      end
-      if Fakes::UnreliableService.prevalidate
-        monitor_services.push(Fakes::UnreliableService)
-      end
-      if Fakes::AlwaysDownService.prevalidate
-        monitor_services.push(Fakes::AlwaysDownService)
-      end
-      if Fakes::HungService.prevalidate
-        monitor_services.push(Fakes::HungService)
-      end
-
+      services = [Fakes::BGSService, Fakes::VacolsService, Fakes::VBMSService, Fakes::VBMSServiceFindDocumentReferenceSeries,
+                  Fakes::VVAService, Fakes::LaggyService, Fakes::UnreliableService, Fakes::AlwaysDownService, Fakes::HungService]
     else
       puts "loading up production services\n\n\n\n"
-      if BGSService.prevalidate
-        monitor_services.push(BGSService)
-      end
-
-      if VacolsService.prevalidate
-        monitor_services.push(VacolsService)
-      end
-
-      if VBMSService.prevalidate
-        monitor_services.push(VBMSService)
-      end
-
-      if VBMSServiceFindDocumentReferenceSeries.prevalidate
-        monitor_services.push(VBMSServiceFindDocumentReferenceSeries)
-      end
+      services = [BGSService, VacolsService, VBMSService, VBMSServiceFindDocumentReferenceSeries, VVAService]
+    end
+    services.each do |service|
+      monitor_services.push(service) if service.prevalidate
     end
     monitor_services
   end
@@ -156,7 +122,7 @@ class MonitorJob < ActiveJob::Base
               worker_data[:thread].join 1
               run_query(worker_data[:serviceClass])
             end
-          rescue Exception => e            
+          rescue Exception => e
             puts e.message
             puts e.backtrace
           end
