@@ -83,7 +83,12 @@ class MonitorService
       end
     end
 
-    @latency = latency
+    if @pass == true
+      @latency = latency
+    else
+      # force latency to be 0 so that it is obvious in prometheus were the errors are
+      @latency = 0
+    end
 
     if @count < 10
       @latency10 -= @latency10 / @count
