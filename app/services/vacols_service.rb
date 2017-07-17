@@ -48,6 +48,9 @@ class VacolsService < MonitorService
         puts "VACOLS connection dropped, reconnecting on next query"
         @connection = nil
       end
+
+      # Propagate the exception up the stack to fail this query. This way, the 
+      # failure will be recorded in Prometheus / Grafana.
       raise
     end
 
