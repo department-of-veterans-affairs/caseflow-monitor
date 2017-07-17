@@ -86,7 +86,7 @@ class MonitorService
     if @pass == true
       @latency = latency
     else
-      # force latency to be 0 so that it is obvious in prometheus were the errors are
+      # force latency to be 0 so that it is obvious in prometheus where the errors were
       @latency = 0
     end
 
