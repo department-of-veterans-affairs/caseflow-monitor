@@ -1,8 +1,8 @@
 require "benchmark"
 
-class BGSPOAService < MonitorService
+class BGSPoaService < MonitorService
   attr_accessor :last_result, :name
-  @@service_name = "BGS.POAService"
+  @@service_name = "BGS.PoaService"
 
   def initialize
 

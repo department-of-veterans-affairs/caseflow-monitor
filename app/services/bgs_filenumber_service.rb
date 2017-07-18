@@ -1,8 +1,8 @@
 require "benchmark"
 
-class BGSFileNumberService < MonitorService
+class BGSFilenumberService < MonitorService
   attr_accessor :last_result, :name
-  @@service_name = "BGS.FileNumberService"
+  @@service_name = "BGS.FilenumberService"
 
   def initialize
 

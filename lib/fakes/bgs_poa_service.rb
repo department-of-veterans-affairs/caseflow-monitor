@@ -1,6 +1,6 @@
-class Fakes::BGSPOAService < MonitorService
+class Fakes::BGSPoaService < MonitorService
   attr_accessor :last_result
-  @@service_name = "BGS.POAService"
+  @@service_name = "BGS.PoaService"
 
   def initialize
     @name = @@service_name
