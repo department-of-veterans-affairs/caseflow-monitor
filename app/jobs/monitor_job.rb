@@ -64,11 +64,11 @@ class MonitorJob < ActiveJob::Base
     monitor_services = []
     if Rails.env.development?
       puts "loading up fake services\n\n\n\n"
-      services = [Fakes::BGSService, Fakes::VacolsService, Fakes::VBMSService, Fakes::VBMSServiceFindDocumentReferenceSeries,
+      services = [Fakes::BGSFileNumberService, Fakes::BGSPOAService, Fakes::VacolsService, Fakes::VBMSService, Fakes::VBMSServiceFindDocumentReferenceSeries,
                   Fakes::VVAService, Fakes::LaggyService, Fakes::UnreliableService, Fakes::AlwaysDownService, Fakes::HungService]
     else
       puts "loading up production services\n\n\n\n"
-      services = [BGSService, VacolsService, VBMSService, VBMSServiceFindDocumentReferenceSeries, VVAService]
+      services = [BGSFileNumberService, BGSPOAService, VacolsService, VBMSService, VBMSServiceFindDocumentReferenceSeries, VVAService]
     end
     services.each do |service|
       monitor_services.push(service) if service.prevalidate

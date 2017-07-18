@@ -1,23 +1,23 @@
 require "benchmark"
 
-class BGSService < MonitorService
+class BGSPOAService < MonitorService
   attr_accessor :last_result, :name
-  @@service_name = "BGS"
+  @@service_name = "BGS.POAService"
 
   def initialize
 
     @bgs_client = init_client
 
     @name = @@service_name
-    @service = "Person"
+    @service = "Organization"
     @env = ENV['BGS_ENVIRONMENT']
-    @api = "findPersonByFileNumber"
+    @api = "findPOAsByFileNumbers"
     super
   end
 
   def query_service
-    person = @bgs_client.people.find_by_file_number(Rails.application.secrets.target_file_num)
-    if !person[:first_nm].blank?
+    poas = @bgs_client.org.find_poas_by_file_number(Rails.application.secrets.target_file_num)
+    if !poas[:ptcpnt_id].blank?
       @pass = true
     end
   end
