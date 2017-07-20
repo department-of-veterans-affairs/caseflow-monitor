@@ -3,7 +3,7 @@
 # # Register the servicein this array to enable periodic query.
 # monitor_services = []
 #
-# if BGSFilenumberService.prevalidate
+# if BGSService.prevalidate
 #   monitor_services.push(BGSService.new)
 # end
 #

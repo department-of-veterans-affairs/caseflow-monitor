@@ -1,12 +1,12 @@
-class Fakes::BGSPoaService < MonitorService
+class Fakes::BGSService < MonitorService
   attr_accessor :last_result
-  @@service_name = "BGS.PoaService"
+  @@service_name = "BGS"
 
   def initialize
     @name = @@service_name
-    @service = "Organization"
+    @service = "Person"
     @env = "beplinktest"
-    @api = "findPOAsByFileNumbers"
+    @api = "findPersonByFileNumber"
     super
   end
 
