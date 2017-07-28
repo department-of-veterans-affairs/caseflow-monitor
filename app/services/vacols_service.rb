@@ -39,13 +39,12 @@ class VacolsService < MonitorService
 
     begin
       filenum = Rails.application.secrets.target_file_num.split(",").first
-      array = @connection.exec_query(
-        "SELECT * FROM VACOLS.BRIEFF WHERE BFKEY=TO_CHAR(#{filenum})")
+      array = @connection.exec_query("SELECT * FROM VACOLS.BRIEFF where BFKEY='#{filenum}'")
     rescue => e
       # If this is a connectivity issue, reset the connection pointer and
       # force the connection to be re-established in the next query.
       if e.original_exception.is_a?(OCIError) &&
-        LOST_CONNECTION_ERROR_CODES.include?(e.original_exception.code)
+         LOST_CONNECTION_ERROR_CODES.include?(e.original_exception.code)
         puts "VACOLS connection dropped, reconnecting on next query"
         @connection = nil
       end
