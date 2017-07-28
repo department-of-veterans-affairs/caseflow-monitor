@@ -26,8 +26,8 @@ class VBMSServiceFindDocumentReferenceSeries < MonitorService
   end
 
   def query_service
-
-    request = VBMS::Requests::FindDocumentSeriesReference.new(Rails.application.secrets.target_file_num)
+    filenum = Rails.application.secrets.target_file_num.split(",").sample
+    request = VBMS::Requests::FindDocumentSeriesReference.new(filenum)
     doc = @client.send_request(request)
     if doc.length > 0
       @pass = true
