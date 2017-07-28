@@ -38,7 +38,7 @@ class VacolsService < MonitorService
     end
 
     begin
-      filenum = Rails.application.secrets.target_file_num.split(",").first
+      filenum = Rails.application.secrets.target_file_num.split(",").first.strip
       array = @connection.exec_query("SELECT * FROM VACOLS.BRIEFF where BFKEY='#{filenum}'")
     rescue => e
       # If this is a connectivity issue, reset the connection pointer and

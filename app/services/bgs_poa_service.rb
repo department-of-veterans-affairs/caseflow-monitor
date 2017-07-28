@@ -16,7 +16,7 @@ class BGSPoaService < MonitorService
   end
 
   def query_service
-    filenum = Rails.application.secrets.target_file_num.split(",").sample
+    filenum = Rails.application.secrets.target_file_num.split(",").sample.strip
     poas = @bgs_client.org.find_poas_by_file_number(filenum)
     if !poas[:ptcpnt_id].blank?
       @pass = true
