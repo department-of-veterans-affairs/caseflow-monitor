@@ -16,7 +16,8 @@ class BGSFilenumberService < MonitorService
   end
 
   def query_service
-    person = @bgs_client.people.find_by_file_number(Rails.application.secrets.target_file_num)
+    filenum = Rails.application.secrets.target_file_num.split(",").sample.strip
+    person = @bgs_client.people.find_by_file_number(filenum)
     if !person[:first_nm].blank?
       @pass = true
     end

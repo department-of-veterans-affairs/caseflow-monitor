@@ -1,3 +1,4 @@
+
 require 'vbms'
 
 class VBMSService < MonitorService
@@ -27,8 +28,8 @@ class VBMSService < MonitorService
   end
 
   def query_service
-
-    request = VBMS::Requests::ListDocuments.new(Rails.application.secrets.target_file_num)
+    filenum = Rails.application.secrets.target_file_num.split(",").sample.strip
+    request = VBMS::Requests::ListDocuments.new(filenum)
     doc = @client.send_request(request)
     if doc.length > 0
       @pass = true
