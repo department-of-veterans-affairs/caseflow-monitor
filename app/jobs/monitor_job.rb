@@ -31,8 +31,8 @@ class MonitorJob < ActiveJob::Base
       setup_zombie_monitor
 
     rescue Exception => e
-      puts e.message
-      puts e.backtrace
+      Rails.logger.warn(e.message)
+      Rails.logger.warn(e.backtrace)
     end
 
   end
@@ -55,6 +55,9 @@ class MonitorJob < ActiveJob::Base
     prometheus.register(
       Prometheus::Client::Summary.new(:latency_summary, 'Summary of query latency')
     )
+    prometheus.register(
+      Prometheus::Client::Gauge.new(:vacols_performance, 'Samples of VACOLS performance metrics')
+    )
   end
 
   # Setup all target monitoring services. The target services will be
@@ -63,7 +66,7 @@ class MonitorJob < ActiveJob::Base
   def setup_services
     monitor_services = []
     if Rails.env.development?
-      puts "loading up fake services\n\n\n\n"
+      Rails.logger.info("loading up fake services\n\n\n\n")
       services = [
         Fakes::BGSFilenumberService, 
         Fakes::BGSPoaService, 
@@ -77,7 +80,7 @@ class MonitorJob < ActiveJob::Base
         Fakes::HungService
       ]
     else
-      puts "loading up production services\n\n\n\n"
+      Rails.logger.info("loading up production services\n\n\n\n")
       services = [
         # BGSFilenumberService, 
         # BGSPoaService, 
@@ -98,7 +101,7 @@ class MonitorJob < ActiveJob::Base
       service = serviceClass.new
       while 1 do
         begin
-          puts "#{service.name} query started"
+          Rails.logger.info("#{service.name} query started")
           @worker[serviceClass.service_name.to_sym] = {
             :thread => th,
             :service => service,
@@ -109,12 +112,12 @@ class MonitorJob < ActiveJob::Base
           if passed == false
             service.failed
           end
-          puts "#{service.name} query done"
+          Rails.logger.info("#{service.name} query done")
         rescue Exception => e
           service.failed
-          puts "run_query failed\n\n\n\n"
-          puts e.message
-          puts e.backtrace
+          Rails.logger.warn("#{service.name} query failed\n\n\n\n")
+          Rails.logger.warn(e.message)
+          Rails.logger.warn(e.backtrace)
         end
         sleep 30
       end
@@ -133,15 +136,15 @@ class MonitorJob < ActiveJob::Base
           begin
             duration = Time.now - worker_data[:service].time
             if duration > 120
-              puts "Zombie detected, killing thread and restarting #{worker_data[:thread]}"
+              Rails.logger.warn("Zombie detected, killing thread and restarting #{worker_data[:thread]}")
               worker_data[:service].failed
               worker_data[:thread].kill
               worker_data[:thread].join 1
               run_query(worker_data[:serviceClass])
             end
           rescue Exception => e
-            puts e.message
-            puts e.backtrace
+            Rails.logger.warn(e.message)
+            Rails.logger.warn(e.backtrace)
           end
         end
       end

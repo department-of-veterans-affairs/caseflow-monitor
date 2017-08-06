@@ -65,6 +65,9 @@ class VacolsService < MonitorService
 
     begin
 
+      latency_gauge = Prometheus::Client.registry.get(:vacols_performance)
+
+
       # # Wait time by Class
       query = <<-SQL
         select e.wait_class "wait_event", 
@@ -76,15 +79,26 @@ class VacolsService < MonitorService
         order by 2 desc
       SQL
       wait_time_by_class = @connection.exec_query(query)
-      puts wait_time_by_class
+      wait_time_by_class.each do |wtc|
+        latency_gauge.set({
+          source: 'ash',
+          name: wtc['wait_event']
+        }, wtc['total_wait_time'])
+      end
     
       # # Overall DB Time
       query = <<-SQL
-        select stat_name, value "Time (Sec)"
+        select stat_name, value "time"
         from v$sys_time_model
       SQL
       sys_time_model = @connection.exec_query(query)
-      puts sys_time_model
+      sys_time_model.each do |stm|
+        latency_gauge.set({
+          source: 'sys_time_model',
+          name: stm['stat_name']
+        }, stm['time'])
+      end
+
 
       # Overall DB Time
       query = <<-SQL
@@ -95,7 +109,10 @@ class VacolsService < MonitorService
         order by count(*) desc
       SQL
       sum_all_db_time_24hrs = @connection.exec_query(query)
-      puts sum_all_db_time_24hrs[0]
+      latency_gauge.set({
+        source: 'ash',
+        name: 'sum_all_db_time_24hrs'
+      }, sum_all_db_time_24hrs[0]['dbtime'])
 
       # Caseflow DB Time
       query = <<-SQL
@@ -107,19 +124,24 @@ class VacolsService < MonitorService
         order by count(*) desc
       SQL
       caseflow_db_time_24hrs = @connection.exec_query(query)
-      puts caseflow_db_time_24hrs[0]
+      latency_gauge.set({
+        source: 'ash',
+        name: 'caseflow_db_time_24hrs'
+      }, caseflow_db_time_24hrs[0]['dbtime'])
 
-      ratio = caseflow_db_time_24hrs[0]['dbtime'].to_f / sum_all_db_time_24hrs[0]['dbtime']
-      puts "Caseflow DB Time Ratio #{ratio*100}"
+      # ratio = caseflow_db_time_24hrs[0]['dbtime'].to_f / sum_all_db_time_24hrs[0]['dbtime']
+      # puts "Caseflow DB Time Ratio #{ratio*100}"
 
     rescue => e
+      Rails.logger.warn(e.message)
+
       # If this is a connectivity issue, reset the connection pointer and
       # force the connection to be re-established in the next query.
       if e.original_exception.is_a?(OCIError) &&
          LOST_CONNECTION_ERROR_CODES.include?(e.original_exception.code)
-        puts "VACOLS connection dropped, reconnecting on next query"
+        Rails.logger.warn("VACOLS connection dropped, reconnecting on next query")
         @connection = nil
-      end
+      end      
 
       # Propagate the exception up the stack to fail this query. This way, the
       # failure will be recorded in Prometheus / Grafana.

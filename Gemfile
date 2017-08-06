@@ -32,7 +32,6 @@ gem 'jbuilder', '~> 2.5'
 # For sending metrics to prometheus
 gem 'prometheus-client'
 
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data'
 
 group :development, :test do
