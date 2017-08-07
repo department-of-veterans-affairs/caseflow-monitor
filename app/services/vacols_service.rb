@@ -9,7 +9,7 @@ class VacolsService < MonitorService
     @name = @@service_name
     @service = "VACOLS"
     @env = ENV['VACOLS_HOST']
-    @api = "VACOLS.BRIEFF"
+    @api = "BRIEFF and ASH"
     super
   end
 
@@ -31,32 +31,6 @@ class VacolsService < MonitorService
   # See # From https://github.com/rsim/oracle-enhanced/blob/d990f945de4d972833487b1b3364a5d013549c7f/lib/active_record/connection_adapters/oracle_enhanced/oci_connection.rb#L420
   LOST_CONNECTION_ERROR_CODES = [ 28, 1012, 3113, 3114, 3135 ] #:nodoc:
 
-  # def query_service
-  #   if @connection == nil
-  #     ActiveRecord::Base.establish_connection(:production_vacols)
-  #     @connection = ActiveRecord::Base.connection
-  #   end
-
-  #   begin
-  #     filenum = Rails.application.secrets.target_file_num.split(",").first.strip
-  #     array = @connection.exec_query("SELECT * FROM VACOLS.BRIEFF where BFKEY='#{filenum}'")
-  #   rescue => e
-  #     # If this is a connectivity issue, reset the connection pointer and
-  #     # force the connection to be re-established in the next query.
-  #     if e.original_exception.is_a?(OCIError) &&
-  #        LOST_CONNECTION_ERROR_CODES.include?(e.original_exception.code)
-  #       puts "VACOLS connection dropped, reconnecting on next query"
-  #       @connection = nil
-  #     end
-
-  #     # Propagate the exception up the stack to fail this query. This way, the
-  #     # failure will be recorded in Prometheus / Grafana.
-  #     raise
-  #   end
-
-  #   @pass = true
-  # end
-
   def query_service
     if @connection == nil
       ActiveRecord::Base.establish_connection(:production_vacols)
@@ -67,8 +41,17 @@ class VacolsService < MonitorService
 
       latency_gauge = Prometheus::Client.registry.get(:vacols_performance)
 
+      # In the Oracle performance metric, we focus on DB Time, where
+      # DB Time = DB CPU + non_idle_wait_time
+      #
+      # DB Time captures the total amount of time the DB is consuming, and it
+      # breaks down to CPU time, and non-idle wait such as latch and lock.
+      # See also: http://blog.orapub.com/20140805/what-is-oracle-db-time-db-cpu-wall-time-and-non-idle-wait-time.html
 
-      # # Wait time by Class
+
+      # A continuous increment of total non-idle wait time by class. The wait class
+      # provides a breakdown of where they are occurring.
+      # 
       query = <<-SQL
         select e.wait_class "wait_event", 
           sum(h.wait_time + h.time_waited) "total_wait_time"
@@ -86,7 +69,7 @@ class VacolsService < MonitorService
         }, wtc['total_wait_time'])
       end
     
-      # # Overall DB Time
+      # Overall system time that includes DB Time, DB CPU and various metrics
       query = <<-SQL
         select stat_name, value "time"
         from v$sys_time_model
@@ -100,7 +83,7 @@ class VacolsService < MonitorService
       end
 
 
-      # Overall DB Time
+      # Summing DB Time from ASH table
       query = <<-SQL
         select count(*) DBTime
         from v$active_session_history
@@ -114,7 +97,7 @@ class VacolsService < MonitorService
         name: 'sum_all_db_time_24hrs'
       }, sum_all_db_time_24hrs[0]['dbtime'])
 
-      # Caseflow DB Time
+      # Summing Caseflow DB Time from ASH table
       query = <<-SQL
         select count(*) DBTime
         from v$active_session_history
@@ -129,8 +112,9 @@ class VacolsService < MonitorService
         name: 'caseflow_db_time_24hrs'
       }, caseflow_db_time_24hrs[0]['dbtime'])
 
-      # ratio = caseflow_db_time_24hrs[0]['dbtime'].to_f / sum_all_db_time_24hrs[0]['dbtime']
-      # puts "Caseflow DB Time Ratio #{ratio*100}"
+      # Sanity check to make sure at least one VACOLS table can be queried.
+      filenum = Rails.application.secrets.target_file_num.split(",").first.strip
+      @connection.exec_query("SELECT * FROM VACOLS.BRIEFF where BFKEY='#{filenum}'")
 
     rescue => e
       Rails.logger.warn(e.message)
