@@ -82,12 +82,12 @@ class MonitorJob < ActiveJob::Base
     else
       Rails.logger.info("loading up production services\n\n\n\n")
       services = [
-        # BGSFilenumberService, 
-        # BGSPoaService, 
+        BGSFilenumberService, 
+        BGSPoaService, 
         VacolsService, 
-        # VBMSService, 
-        # VBMSServiceFindDocumentReferenceSeries, 
-        # VVAService
+        VBMSService, 
+        VBMSServiceFindDocumentReferenceSeries, 
+        VVAService
       ]
     end
     services.each do |service|
