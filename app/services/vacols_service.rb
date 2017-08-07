@@ -41,6 +41,12 @@ class VacolsService < MonitorService
 
       latency_gauge = Prometheus::Client.registry.get(:vacols_performance)
 
+      query = <<-SQL
+        select user_id from DBA_USERS where username = 'DSUSER';
+      SQL
+      user_id_result = @connection.exec_query(query)
+      dsuser_id = user_id_result[0]['USER_ID']
+
       # In the Oracle performance metric, we focus on DB Time, where
       # DB Time = DB CPU + non_idle_wait_time
       #
@@ -103,7 +109,7 @@ class VacolsService < MonitorService
         from v$active_session_history
         where sample_time > sysdate - 1
           and session_type <> 'BACKGROUND'
-          and v$active_session_history.user_id = 1971
+          and v$active_session_history.user_id = dsuser_id
         order by count(*) desc
       SQL
       caseflow_db_time_24hrs = @connection.exec_query(query)
