@@ -85,7 +85,6 @@ class MonitorJob < ActiveJob::Base
         BGSFilenumberService, 
         BGSPoaService, 
         VacolsService, 
-        VacolsServiceAsh, 
         VBMSService, 
         VBMSServiceFindDocumentReferenceSeries, 
         VVAService
