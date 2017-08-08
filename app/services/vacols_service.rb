@@ -42,7 +42,7 @@ class VacolsService < MonitorService
       latency_gauge = Prometheus::Client.registry.get(:vacols_performance)
 
       query = <<-SQL
-        select user_id from DBA_USERS where username = 'DSUSER';
+        select user_id from DBA_USERS where username = 'DSUSER'
       SQL
       user_id_result = @connection.exec_query(query)
       dsuser_id = user_id_result[0]['user_id']
@@ -104,15 +104,14 @@ class VacolsService < MonitorService
       }, sum_all_db_time_24hrs[0]['dbtime'])
 
       # Summing Caseflow DB Time from ASH table
-      query = <<-SQL
+      caseflow_db_time_24hrs = @connection.exec_query(<<-EQL)
         select count(*) DBTime
         from v$active_session_history
         where sample_time > sysdate - 1
           and session_type <> 'BACKGROUND'
-          and v$active_session_history.user_id = dsuser_id
+          and v$active_session_history.user_id = #{dsuser_id}
         order by count(*) desc
-      SQL
-      caseflow_db_time_24hrs = @connection.exec_query(query)
+      EQL
       latency_gauge.set({
         source: 'ash',
         name: 'caseflow_db_time_24hrs'
