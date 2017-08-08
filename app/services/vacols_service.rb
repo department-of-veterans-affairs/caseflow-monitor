@@ -1,7 +1,7 @@
 require "benchmark"
 
-class VacolsServiceAsh < MonitorService
-  @@service_name = "VACOLS.ASH"
+class VacolsService < MonitorService
+  @@service_name = "VACOLS"
 
   def initialize
     @connection = nil
