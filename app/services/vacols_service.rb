@@ -22,19 +22,29 @@ class VacolsService < MonitorService
     @@service_name
   end
 
+  # A list of OCI error code that determines Oracle connectivity issues.
+  # ORA-00028: your session has been killed
+  # ORA-01012: not logged on
+  # ORA-03113: end-of-file on communication channel
+  # ORA-03114: not connected to ORACLE
+  # ORA-03135: connection lost contact
+  # See # From https://github.com/rsim/oracle-enhanced/blob/d990f945de4d972833487b1b3364a5d013549c7f/lib/active_record/connection_adapters/oracle_enhanced/oci_connection.rb#L420
+  LOST_CONNECTION_ERROR_CODES = [ 28, 1012, 3113, 3114, 3135 ] #:nodoc:
+
   def query_service
-    Rails.logger.info("ActiveRecord Base Connection #{ActiveRecord::Base.connection}")
-    @connection = ActiveRecord::Base.connection
+    if @connection == nil
+      ActiveRecord::Base.establish_connection(:production_vacols)
+      @connection = ActiveRecord::Base.connection
+    end
 
     begin
 
       latency_gauge = Prometheus::Client.registry.get(:vacols_performance)
 
       query = <<-SQL
-        select user_id from DBA_USERS where username = 'DSUSER'
+        select user_id from DBA_USERS where username = 'DSUSER';
       SQL
       user_id_result = @connection.exec_query(query)
-      Rails.logger.info("USER ID RESULT IS #{user_id_result[0]}")
       dsuser_id = user_id_result[0]['user_id']
 
       # In the Oracle performance metric, we focus on DB Time, where
@@ -94,14 +104,15 @@ class VacolsService < MonitorService
       }, sum_all_db_time_24hrs[0]['dbtime'])
 
       # Summing Caseflow DB Time from ASH table
-      caseflow_db_time_24hrs = @connection.exec_query(<<-EOQ)
+      query = <<-SQL
         select count(*) DBTime
         from v$active_session_history
         where sample_time > sysdate - 1
           and session_type <> 'BACKGROUND'
-          and v$active_session_history.user_id = #{dsuser_id}
+          and v$active_session_history.user_id = dsuser_id
         order by count(*) desc
-      EOQ
+      SQL
+      caseflow_db_time_24hrs = @connection.exec_query(query)
       latency_gauge.set({
         source: 'ash',
         name: 'caseflow_db_time_24hrs'
@@ -109,6 +120,14 @@ class VacolsService < MonitorService
 
     rescue => e
       Rails.logger.warn(e.message)
+
+      # If this is a connectivity issue, reset the connection pointer and
+      # force the connection to be re-established in the next query.
+      if e.original_exception.is_a?(OCIError) &&
+         LOST_CONNECTION_ERROR_CODES.include?(e.original_exception.code)
+        Rails.logger.warn("VACOLS connection dropped, reconnecting on next query")
+        @connection = nil
+      end      
 
       # Propagate the exception up the stack to fail this query. This way, the
       # failure will be recorded in Prometheus / Grafana.
