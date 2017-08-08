@@ -9,4 +9,5 @@ docker run \
     -v `pwd`:/opt/caseflow-monitor \
     -p 3000:3000 \
     --name caseflow-monitor-container \
+    -w /opt/caseflow-monitor \
     appeals-caseflow-monitor-img
