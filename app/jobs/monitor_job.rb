@@ -69,6 +69,7 @@ class MonitorJob < ActiveJob::Base
       Rails.logger.info("loading up fake services\n\n\n\n")
       services = [
         Fakes::BGSAddressService,
+        Fakes::BGSAwardsService,
         Fakes::BGSBenefitsService,
         Fakes::BGSClaimantService,
         Fakes::BGSFilenumberService, 
@@ -87,6 +88,7 @@ class MonitorJob < ActiveJob::Base
       Rails.logger.info("loading up production services\n\n\n\n")
       services = [
         BGSAddressService,
+        BGSAwardsService,
         BGSBenefitsService,
         BGSClaimantService,
         BGSFilenumberService, 
