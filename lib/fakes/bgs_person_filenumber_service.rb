@@ -1,6 +1,6 @@
-class Fakes::BGSFilenumberService < MonitorService
+class Fakes::BGSPersonFilenumberService < MonitorService
   attr_accessor :last_result
-  @@service_name = "BGS.FilenumberService"
+  @@service_name = "BGS.PersonFilenumberService"
 
   def initialize
     @name = @@service_name
