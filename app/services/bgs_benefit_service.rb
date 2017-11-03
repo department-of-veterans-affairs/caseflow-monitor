@@ -17,8 +17,8 @@ class BGSBenefitsService < MonitorService
 
   def query_service
     filenum = Rails.application.secrets.target_file_num.split(",").sample.strip
-    benefit = @bgs_client.benefit.find_by_vbms_file_number(filenum)
-    if !benefit[:first_nm].blank?
+    benefit = @bgs_client.claims.find_by_vbms_file_number(filenum)
+    if !benefit[:fileNumber].blank?
       @pass = true
     end
   end
