@@ -16,7 +16,7 @@ class BGSAwardsService < MonitorService
   end
 
   def query_service
-    participant_id = Rails.application.secrets.participant_id.split(",").sample.strip
+    participant_id = participant_id = Rails.configuration.participant_id #Rails.application.secrets.participant_id.split(",").sample.strip
     award = @bgs_client.awards.find_by_participant_id(participant_id)
     if !award[:ptcpntVetId].blank?
       @pass = true
