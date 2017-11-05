@@ -73,13 +73,7 @@ class MonitorService
     @pass = false
     @count += 1
     latency = Benchmark.realtime do
-      begin
-        query_service
-      rescue Exception => e
-        Rails.logger.warn("query failed\n")
-        Rails.logger.warn(e.message)
-        Rails.logger.warn(e.backtrace)
-      end
+      query_service
     end
 
     if @pass == true
