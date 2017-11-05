@@ -70,9 +70,11 @@ class MonitorJob < ActiveJob::Base
       services = [
         Fakes::BGSAddressService,
         Fakes::BGSBenefitsService,
-        Fakes::BGSClaimantService,
+        Fakes::BGSClaimantFlashesService,
+        Fakes::BGSClaimantGeneralInfoService,
         Fakes::BGSOrganizationPoaService,
         Fakes::BGSPersonFilenumberService,
+        Fakes::BGSStandardDataPoasService,
         Fakes::VacolsService,
         Fakes::VBMSService,
         Fakes::VBMSServiceFindDocumentReferenceSeries,
@@ -87,9 +89,11 @@ class MonitorJob < ActiveJob::Base
       services = [
         BGSAddressService,
         BGSBenefitsService,
-        BGSClaimantService,
+        BGSClaimantFlashesService,
+        BGSClaimantGeneralInfoService
         BGSOrganizationPoaService,
         BGSPersonFilenumberService,
+        BGSStandardDataPoasService,
         VacolsService,
         VBMSService,
         VBMSServiceFindDocumentReferenceSeries,

@@ -1,6 +1,6 @@
-class Fakes::BGSClaimantService < MonitorService
+class Fakes::BGSClaimantFlashesService < MonitorService
   attr_accessor :last_result
-  @@service_name = "BGS.ClaimantService"
+  @@service_name = "BGS.ClaimantFlashesService"
 
   def initialize
     @name = @@service_name

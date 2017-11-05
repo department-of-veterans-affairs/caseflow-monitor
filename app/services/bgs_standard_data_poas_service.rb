@@ -1,24 +1,23 @@
 require "benchmark"
 
-class BGSClaimantService < MonitorService
+class BGSStandardDataPoasService < MonitorService
   attr_accessor :last_result, :name
-  @@service_name = "BGS.ClaimantService"
+  @@service_name = "BGS.StandardDataPoasService"
 
   def initialize
 
     @bgs_client = init_client
 
     @name = @@service_name
-    @service = "Claimant"
+    @service = "Data"
     @env = ENV['BGS_ENVIRONMENT']
-    @api = "findFlashes"
+    @api = "find_power_of_attorneys"
     super
   end
 
   def query_service
-    filenum = Rails.application.secrets.target_file_num.split(",").sample.strip
-    flashes = @bgs_client.claimants.find_flashes(filenum)
-    if !flashes[:ptcpnt_id].blank?
+    poas = @bgs_client.data.find_power_of_attorneys
+    if !poas.empty?
       @pass = true
     end
   end
