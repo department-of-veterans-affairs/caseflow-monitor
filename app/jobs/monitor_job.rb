@@ -90,7 +90,7 @@ class MonitorJob < ActiveJob::Base
         BGSAddressService,
         BGSBenefitsService,
         BGSClaimantFlashesService,
-        BGSClaimantGeneralInfoService
+        BGSClaimantGeneralInfoService,
         BGSOrganizationPoaService,
         BGSPersonFilenumberService,
         BGSStandardDataPoasService,
