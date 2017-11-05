@@ -18,7 +18,7 @@ class BGSAddressService < MonitorService
   def query_service
     participant_id = Rails.application.secrets.participant_ids.split(",").sample.strip
     address = @bgs_client.address.find_by_participant_id(participant_id)
-    if !address.nil?
+    if !address[:city_nm].blank?
       @pass = true
     end
   end
