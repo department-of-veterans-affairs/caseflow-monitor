@@ -1,24 +1,24 @@
 require "benchmark"
 
-class BGSFilenumberService < MonitorService
+class BGSBenefitsService < MonitorService
   attr_accessor :last_result, :name
-  @@service_name = "BGS.FilenumberService"
+  @@service_name = "BGS.BenefitsService"
 
   def initialize
 
     @bgs_client = init_client
 
     @name = @@service_name
-    @service = "Person"
+    @service = "Benefits"
     @env = ENV['BGS_ENVIRONMENT']
-    @api = "findPersonByFileNumber"
+    @api = "findBenefitClaim"
     super
   end
 
   def query_service
     filenum = Rails.application.secrets.target_file_num.split(",").sample.strip
-    person = @bgs_client.people.find_by_file_number(filenum)
-    if !person[:first_nm].blank?
+    benefit = @bgs_client.claims.find_by_vbms_file_number(filenum)
+    if !benefit[:fileNumber].blank?
       @pass = true
     end
   end

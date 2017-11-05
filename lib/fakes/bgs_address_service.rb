@@ -1,12 +1,12 @@
-class Fakes::BGSFilenumberService < MonitorService
+class Fakes::BGSAddressService < MonitorService
   attr_accessor :last_result
-  @@service_name = "BGS.FilenumberService"
+  @@service_name = "BGS.AddressService"
 
   def initialize
     @name = @@service_name
-    @service = "Person"
+    @service = "Address"
     @env = "beplinktest"
-    @api = "findPersonByFileNumber"
+    @api = "findByParticipantId"
     super
   end
 

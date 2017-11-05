@@ -63,5 +63,6 @@ module CaseflowMonitor
     
     config.action_controller.relative_url_root = "#{config.app_url_prefix}/assets";
     config.assets.prefix = "#{config.app_url_prefix}/assets";
+
   end
 end

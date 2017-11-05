@@ -68,8 +68,11 @@ class MonitorJob < ActiveJob::Base
     if Rails.env.development?
       Rails.logger.info("loading up fake services\n\n\n\n")
       services = [
-        Fakes::BGSFilenumberService, 
-        Fakes::BGSPoaService, 
+        Fakes::BGSBenefitsService,
+        Fakes::BGSClaimantService,
+        Fakes::BGSOrganizationPoaService, 
+        Fakes::BGSPersonFilenumberService,
+        Fakes::BGSVeteranService,
         Fakes::VacolsService, 
         Fakes::VBMSService, 
         Fakes::VBMSServiceFindDocumentReferenceSeries,
@@ -82,8 +85,11 @@ class MonitorJob < ActiveJob::Base
     else
       Rails.logger.info("loading up production services\n\n\n\n")
       services = [
-        BGSFilenumberService, 
-        BGSPoaService, 
+        BGSBenefitsService,
+        BGSClaimantService,
+        BGSOrganizationPoaService, 
+        BGSPersonFilenumberService,
+        BGSVeteranService,
         VacolsService, 
         VBMSService, 
         VBMSServiceFindDocumentReferenceSeries, 
