@@ -18,7 +18,7 @@ class BGSVeteranService < MonitorService
   def query_service
     filenum = Rails.application.secrets.target_file_num.split(",").sample.strip
     veteran = @bgs_client.veteran.find_by_file_number(filenum)
-    if !veteran[:vet_corp_record].blank?
+    if !veteran[:last_name].blank?
       @pass = true
     end
   end
