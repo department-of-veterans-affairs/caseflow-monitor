@@ -6,7 +6,7 @@ class Fakes::BGSStandardDataPoasService < MonitorService
     @name = @@service_name
     @service = "Data"
     @env = "beplinktest"
-    @api = "find_power_of_attorneys"
+    @api = "findPowerOfAttorneys"
     super
   end
 

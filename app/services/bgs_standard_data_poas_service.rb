@@ -11,7 +11,7 @@ class BGSStandardDataPoasService < MonitorService
     @name = @@service_name
     @service = "Data"
     @env = ENV['BGS_ENVIRONMENT']
-    @api = "find_power_of_attorneys"
+    @api = "findPowerOfAttorneys"
     super
   end
 
