@@ -12,7 +12,7 @@ class SampleController < ApplicationController
   def services
     get_data
       services_results = @results.values.each_with_object([]) do |element, boolean_result|
-        if element["up_rate_5"].to_i < 50
+        if element[:up_rate_5].to_i < 50
           boolean_result << { element[:name] => :false }
         else
           boolean_result << { element[:name] => :true }
