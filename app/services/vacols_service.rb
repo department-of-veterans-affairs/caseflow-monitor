@@ -121,7 +121,7 @@ class VacolsService < MonitorService
       # replication is running as expected.
       dms_update = <<-EQL
         update VACOLS.CORRES set SNOTES= (to_char(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')) 
-        where STAFKEY=#{Rails.application.secrets.dms_checker_staff_key}'
+        where STAFKEY='#{Rails.application.secrets.dms_checker_staff_key}'
       EQL
       @connection.execute(dms_update)
       
