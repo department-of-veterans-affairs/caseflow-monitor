@@ -12,7 +12,7 @@ class VBMSServiceFindDocumentReferenceSeries < MonitorService
 
     @client = VBMS::Client.from_env_vars(
       env_name: ENV["CONNECT_VBMS_ENV"],
-      use_proxy: true
+      use_forward_proxy: ENV["CONNECT_VBMS_BASE_PROXY_URL"].present?
     )
     super
   end
