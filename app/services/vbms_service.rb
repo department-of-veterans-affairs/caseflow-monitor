@@ -13,7 +13,8 @@ class VBMSService < MonitorService
     @api = "ListDocuments"
 
     @client = VBMS::Client.from_env_vars(
-      env_name: ENV["CONNECT_VBMS_ENV"]
+      env_name: ENV["CONNECT_VBMS_ENV"],
+      use_forward_proxy: ENV["CONNECT_VBMS_PROXY_BASE_URL"].present?
     )
     super
   end
