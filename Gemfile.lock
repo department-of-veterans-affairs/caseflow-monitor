@@ -33,10 +33,11 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/ruby-bgs.git
-  revision: 9a350be91959aacc0b8f3968ce6a7bf7c51305cd
+  revision: 45e563186e6c891d02dd167dd52ce80efbc5022f
+  ref: 45e563186e6c891d02dd167dd52ce80efbc5022f
   specs:
     bgs (0.1)
-      nokogiri
+      nokogiri (~> 1.8.1)
       savon (~> 2.11)
 
 GEM
@@ -279,4 +280,4 @@ DEPENDENCIES
   web-console (>= 3.3.0)
 
 BUNDLED WITH
-   1.15.4
+   1.16.0
