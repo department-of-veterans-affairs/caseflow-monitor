@@ -44,7 +44,7 @@ end
 
 group :production do
   gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git"
-  gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: 'd0b9647f90f44ec7791bc6eb3f59a74062b94fc8'
+  gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: '44882162a6a75dd624f9b63dfa8a29d5f6f8610e'
   gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", ref: '45e563186e6c891d02dd167dd52ce80efbc5022f'
   gem 'activerecord-oracle_enhanced-adapter', '~> 1.7.0'
   gem 'ruby-oci8'
