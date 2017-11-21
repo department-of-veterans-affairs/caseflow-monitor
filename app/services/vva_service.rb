@@ -34,7 +34,8 @@ class VVAService < MonitorService
     VVA::Services.new(
       wsdl: ENV['VVA_WSDL'],
       username: ENV["VVA_USERNAME"],
-      password: ENV["VVA_PASSWORD"]
+      password: ENV["VVA_PASSWORD"],
+      forward_proxy_url: ENV["CONNECT_VVA_PROXY_BASE_URL"]
     )
   end
 end

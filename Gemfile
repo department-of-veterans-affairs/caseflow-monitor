@@ -44,8 +44,8 @@ end
 
 group :production do
   gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git"
-  gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git"
-  gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git"
+  gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", branch: 'master'
+  gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", branch: 'master'
   gem 'activerecord-oracle_enhanced-adapter', '~> 1.7.0'
   gem 'ruby-oci8'
 end
@@ -55,4 +55,3 @@ group :development do
   gem 'web-console', '>= 3.3.0'
   gem 'listen', '~> 3.0.5'
 end
-

@@ -13,7 +13,7 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
-  revision: df0adf84d1ffa643195ad68edc91b7d4e4142a95
+  revision: 2e401bf7749f0780280951cbde777b7d67765554
   specs:
     connect_vbms (1.0.0)
       httpclient (~> 2.8.0)
@@ -26,17 +26,19 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vva.git
-  revision: 67610c998e0dda12e8912eb8ddddb33c3b84925d
+  revision: 32bb9962eb422c17049d085cf505ce5008d6f057
+  branch: master
   specs:
     connect_vva (0.1)
       savon (~> 2.11, >= 2.11.0)
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/ruby-bgs.git
-  revision: 9a350be91959aacc0b8f3968ce6a7bf7c51305cd
+  revision: faad830fe463e88f21bdb4a1af7422c2e529aab8
+  branch: master
   specs:
     bgs (0.1)
-      nokogiri
+      nokogiri (~> 1.8.1)
       savon (~> 2.11)
 
 GEM
@@ -279,4 +281,4 @@ DEPENDENCIES
   web-console (>= 3.3.0)
 
 BUNDLED WITH
-   1.15.4
+   1.16.0
