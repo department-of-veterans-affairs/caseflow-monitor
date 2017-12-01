@@ -1,14 +1,14 @@
 require 'vbms'
 
-class VBMSServiceFindDocumentReferenceSeries < MonitorService
-  @@service_name = "VBMS.FindDocumentSeriesReference"
+class VBMSServiceFindDocumentVersionReference < MonitorService
+  @@service_name = "VBMS.FindDocumentVersionReference"
 
   def initialize
     @connection = nil
 
     @name = @@service_name
     @service = "VBMS"
-    @api = "FindDocumentSeriesReference"
+    @api = "FindDocumentVersionReference"
 
     @client = VBMS::Client.from_env_vars(
       env_name: ENV["CONNECT_VBMS_ENV"],
@@ -28,7 +28,7 @@ class VBMSServiceFindDocumentReferenceSeries < MonitorService
 
   def query_service
     filenum = Rails.application.secrets.target_file_num.split(",").sample.strip
-    request = VBMS::Requests::FindDocumentSeriesReference.new(filenum)
+    request = VBMS::Requests::FindDocumentVersionReference.new(filenum)
     doc = @client.send_request(request)
     if doc.length > 0
       @pass = true
