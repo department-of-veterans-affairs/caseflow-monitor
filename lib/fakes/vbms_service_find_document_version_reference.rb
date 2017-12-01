@@ -1,11 +1,11 @@
-class Fakes::VBMSServiceFindDocumentReferenceSeries < MonitorService
+class Fakes::VBMSServiceFindDocumentVersionReference < MonitorService
   attr_accessor :last_result
-  @@service_name = "VBMS.FindDocumentReferenceSeries"
+  @@service_name = "VBMS.FindDocumentVersionReference"
 
-  def initialize    
+  def initialize
     @name = @@service_name
     @service = "VBMS"
-    @api = "FindDocumentReferenceSeries"
+    @api = "FindDocumentVersionReference"
     super
   end
 
