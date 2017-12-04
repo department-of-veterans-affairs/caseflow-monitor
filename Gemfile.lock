@@ -26,7 +26,7 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vva.git
-  revision: d2b21b4e62969693a12306e58173170a31c8234b
+  revision: 180c8b16031c0b54d6aa619a4a8e2a8e49ae1124
   branch: master
   specs:
     connect_vva (0.1)
