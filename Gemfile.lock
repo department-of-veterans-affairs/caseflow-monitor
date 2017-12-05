@@ -13,7 +13,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
-  revision: 2e401bf7749f0780280951cbde777b7d67765554
+  revision: 5dda05573d424d557be7a09052ab24b0dc6a5c5f
+  branch: master
   specs:
     connect_vbms (1.0.0)
       httpclient (~> 2.8.0)
@@ -26,7 +27,7 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vva.git
-  revision: 180c8b16031c0b54d6aa619a4a8e2a8e49ae1124
+  revision: f7036e7d3c17aae6e66e345051ea61c6badc5de2
   branch: master
   specs:
     connect_vva (0.1)
@@ -121,7 +122,8 @@ GEM
     httpi (2.4.2)
       rack
       socksify
-    i18n (0.8.1)
+    i18n (0.9.1)
+      concurrent-ruby (~> 1.0)
     jbuilder (2.6.3)
       activesupport (>= 3.0.0, < 5.2)
       multi_json (~> 1.2)
@@ -134,14 +136,12 @@ GEM
       rb-inotify (~> 0.9, >= 0.9.7)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
-    mail (2.6.4)
-      mime-types (>= 1.16, < 4)
+    mail (2.7.0)
+      mini_mime (>= 0.1.1)
     method_source (0.8.2)
-    mime-types (3.1)
-      mime-types-data (~> 3.2015)
-    mime-types-data (3.2016.0521)
+    mini_mime (1.0.0)
     mini_portile2 (2.3.0)
-    minitest (5.10.1)
+    minitest (5.10.3)
     momentjs-rails (2.17.1)
       railties (>= 3.1)
     multi_json (1.12.1)
@@ -223,7 +223,7 @@ GEM
     turbolinks (5.0.1)
       turbolinks-source (~> 5)
     turbolinks-source (5.0.0)
-    tzinfo (1.2.3)
+    tzinfo (1.2.4)
       thread_safe (~> 0.1)
     tzinfo-data (1.2017.2)
       tzinfo (>= 1.0.0)
@@ -245,7 +245,7 @@ GEM
     websocket-extensions (0.1.2)
     xmldsig (0.3.2)
       nokogiri
-    xmlenc (0.6.9)
+    xmlenc (0.7.0)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       nokogiri (>= 1.6.0, < 2.0.0)
