@@ -34,6 +34,7 @@ gem 'prometheus-client'
 
 gem 'tzinfo-data'
 
+# Sending metrics to DataDog
 gem 'dogapi'
 
 group :development, :test do
