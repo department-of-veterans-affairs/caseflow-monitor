@@ -74,7 +74,7 @@ class VacolsService < MonitorService
           name: wtc['wait_event']
         }, wtc['total_wait_time'])
         @dog.emit_point("vacols_performance", "#{wtc['total_wait_time']}", 
-          options[:tags] = ["name:#{wtc['wait_event']}", "env:#{@env}", "source:ash"])
+          :tags => ["name:#{wtc['wait_event']}", "env:#{@env}", "source:ash"])
       end
     
       # Overall system time that includes DB Time, DB CPU and various metrics
