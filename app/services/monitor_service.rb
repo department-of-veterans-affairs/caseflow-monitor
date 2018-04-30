@@ -179,9 +179,9 @@ class MonitorService
 
     @dog.batch_metrics do
       @dog.emit_point("#{@name}.#{@api}.#{@env}.latency_summary","#{@latency}", 
-        options[:tags] = ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
+        :tags => ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
       @dog.emit_point("#{@name}.#{@api}.#{@env}.latency_gauge","#{@latency}", 
-        :tags =>  ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
+        :tags => ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
     end
 
     if @pass == true
