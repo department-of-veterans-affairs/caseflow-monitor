@@ -73,6 +73,8 @@ class VacolsService < MonitorService
           source: 'ash',
           name: wtc['wait_event']
         }, wtc['total_wait_time'])
+        @dog.emit_point("vacols_performance", "#{wtc['total_wait_time']}", 
+          :tags => ["name:#{wtc['wait_event']}", "env:#{@env}", "source:ash"])
       end
     
       # Overall system time that includes DB Time, DB CPU and various metrics
@@ -86,6 +88,8 @@ class VacolsService < MonitorService
           source: 'sys_time_model',
           name: stm['stat_name']
         }, stm['time'])
+        @dog.emit_point("vacols_performance", "#{stm['time']}",
+          :tags => ["name:#{stm['stat_name']}", "env:#{@env}", "source:sys_time_model"])
       end
 
 
@@ -102,6 +106,8 @@ class VacolsService < MonitorService
         source: 'ash',
         name: 'sum_all_db_time_24hrs'
       }, sum_all_db_time_24hrs[0]['dbtime'])
+      @dog.emit_point("vacols_performance", "#{sum_all_db_time_24hrs[0]['dbtime']}", 
+        :tags => ["name:sum_all_db_time_24hrs", "env:#{@env}", "source:ash"])
 
       # Summing Caseflow DB Time from ASH table
       caseflow_db_time_24hrs = @connection.exec_query(<<-EQL)
@@ -116,6 +122,8 @@ class VacolsService < MonitorService
         source: 'ash',
         name: 'caseflow_db_time_24hrs'
       }, caseflow_db_time_24hrs[0]['dbtime'])
+      @dog.emit_point("vacols_performance", "#{caseflow_db_time_24hrs[0]['dbtime']}", 
+        :tags => ["name:caseflow_db_time_24hrs", "env:#{@env}", "source:ash"])
 
       # Update a test note periodically with a timestamp to verify that DMS 
       # replication is running as expected.

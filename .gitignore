@@ -20,3 +20,6 @@
 # Ignore Byebug command history file.
 .byebug_history
 .env
+
+# Ignore RubyMine files
+.idea
