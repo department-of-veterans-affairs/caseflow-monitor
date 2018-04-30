@@ -107,6 +107,8 @@ GEM
     d3-rails (4.7.0)
       railties (>= 3.1)
     debug_inspector (0.0.2)
+    dogapi (1.29.0)
+      multi_json
     dotenv (2.1.2)
     dotenv-rails (2.1.2)
       dotenv (= 2.1.2)
@@ -264,6 +266,7 @@ DEPENDENCIES
   coffee-rails (~> 4.2)
   connect_vbms!
   connect_vva!
+  dogapi
   dotenv-rails
   jbuilder (~> 2.5)
   jquery-rails
@@ -281,4 +284,4 @@ DEPENDENCIES
   web-console (>= 3.3.0)
 
 BUNDLED WITH
-   1.16.0
+   1.16.1
