@@ -181,15 +181,15 @@ class MonitorService
       @dog.emit_point("#{@name}.#{@api}.#{@env}.latency_summary","#{@latency}", 
         options[:tags] = ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
       @dog.emit_point("#{@name}.#{@api}.#{@env}.latency_gauge","#{@latency}", 
-        options[:tags] = ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
+        :tags =>  ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
     end
 
     if @pass == true
       @dog.emit_point("#{@name}.#{@api}.#{@env}.successful_query_total","1", 
-        options[:tags] = ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
+        :tags => ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
     else
       @dog.emit_point("#{@name}.#{@api}.#{@env}.failed_query_total","1", 
-        options[:tags] = ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
+        :tags => ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
     end
   end
 end
