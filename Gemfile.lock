@@ -13,8 +13,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
-  revision: 5dda05573d424d557be7a09052ab24b0dc6a5c5f
-  branch: master
+  revision: 81a9ad521f96a23e5a483cbc914cc9ec3331a52e
+  branch: lisac/sha256_partial_upgrade
   specs:
     connect_vbms (1.0.0)
       httpclient (~> 2.8.0)
