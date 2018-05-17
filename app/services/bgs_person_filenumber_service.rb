@@ -16,10 +16,12 @@ class BGSPersonFilenumberService < MonitorService
   end
 
   def query_service
-    filenum = Rails.application.secrets.target_file_num.split(",").sample.strip
-    person = @bgs_client.people.find_by_file_number(filenum)
-    if !person[:first_nm].blank?
-      @pass = true
+    if !@datadog_emit
+      filenum = Rails.application.secrets.target_file_num.split(",").sample.strip
+      person = @bgs_client.people.find_by_file_number(filenum)
+      if !person[:first_nm].blank?
+        @pass = true
+      end
     end
   end
 

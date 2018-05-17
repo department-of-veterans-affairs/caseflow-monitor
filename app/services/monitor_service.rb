@@ -11,10 +11,6 @@ class MonitorService
     # Read from last result cache, and use that as base line if it exists.
     last_result = Rails.cache.read(@name)
 
-    # Initialize dog so sub classes can use it as well as this parent abstract class
-    dd_api_key = ENV["DD_API_KEY"]
-    @dog = Dogapi::Client.new(dd_api_key)
-
     if last_result == nil
       @time = 0
       @latency = 0
@@ -38,8 +34,12 @@ class MonitorService
     end
     
     initialize_prometheus_metrics
-
     save
+    
+    # Initialize dog so sub classes can use it as well as this parent abstract class
+    dd_api_key = ENV["DD_API_KEY"]
+    @dog = Dogapi::Client.new(dd_api_key)
+
   end
 
   def save
@@ -71,17 +71,20 @@ class MonitorService
     @failed_rate_5 += 1 / 5.0
 
     self.update_prometheus_metrics
-    self.update_datadog_metrics
     save
+    self.update_datadog_metrics
   end
 
   def query
     @time = Time.now
     @pass = false
     @count += 1
+    @datadog_emit = false
     latency = Benchmark.realtime do
       query_service
     end
+    @datadog_emit = true
+    query_service
 
     if @pass == true
       @failed_rate_5 -= @failed_rate_5 / 5.0
@@ -116,11 +119,10 @@ class MonitorService
     @latency = latency
 
     self.update_prometheus_metrics
-    self.update_datadog_metrics
-
+    
     save
-
     @pass
+    self.update_datadog_metrics
   end
 
   # Remark

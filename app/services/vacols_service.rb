@@ -73,8 +73,6 @@ class VacolsService < MonitorService
           source: 'ash',
           name: wtc['wait_event']
         }, wtc['total_wait_time'])
-        @dog.emit_point("vacols_performance", "#{wtc['total_wait_time']}", 
-          :tags => ["name:#{wtc['wait_event']}", "env:#{@env}", "source:ash"])
       end
     
       # Overall system time that includes DB Time, DB CPU and various metrics
@@ -88,10 +86,7 @@ class VacolsService < MonitorService
           source: 'sys_time_model',
           name: stm['stat_name']
         }, stm['time'])
-        @dog.emit_point("vacols_performance", "#{stm['time']}",
-          :tags => ["name:#{stm['stat_name']}", "env:#{@env}", "source:sys_time_model"])
       end
-
 
       # Summing DB Time from ASH table
       query = <<-SQL
@@ -106,9 +101,7 @@ class VacolsService < MonitorService
         source: 'ash',
         name: 'sum_all_db_time_24hrs'
       }, sum_all_db_time_24hrs[0]['dbtime'])
-      @dog.emit_point("vacols_performance", "#{sum_all_db_time_24hrs[0]['dbtime']}", 
-        :tags => ["name:sum_all_db_time_24hrs", "env:#{@env}", "source:ash"])
-
+      
       # Summing Caseflow DB Time from ASH table
       caseflow_db_time_24hrs = @connection.exec_query(<<-EQL)
         select count(*) DBTime
@@ -122,8 +115,6 @@ class VacolsService < MonitorService
         source: 'ash',
         name: 'caseflow_db_time_24hrs'
       }, caseflow_db_time_24hrs[0]['dbtime'])
-      @dog.emit_point("vacols_performance", "#{caseflow_db_time_24hrs[0]['dbtime']}", 
-        :tags => ["name:caseflow_db_time_24hrs", "env:#{@env}", "source:ash"])
 
       # Update a test note periodically with a timestamp to verify that DMS 
       # replication is running as expected.
@@ -149,5 +140,28 @@ class VacolsService < MonitorService
     end
 
     @pass = true
+    if @datadog_emit
+      report_to_datadog(wait_time_by_class, sys_time_model, sum_all_db_time_24hrs, caseflow_db_time_24hrs)
+    end
   end
+
+  def report_to_datadog(wtc, stm, sadt, cdt)
+    # wait time by class
+    wtc.each do |wtceach|
+      @dog.emit_point("vacols_performance", "#{wtceach['total_wait_time']}",
+        :tags => ["name:#{wtceach['wait_event']}", "env:#{@env}", "source:ash"])
+    end
+    # sys time model
+    stm.each do |stmeach|
+      @dog.emit_point("vacols_performance", "#{stmeach['time']}",
+        :tags => ["name:#{stmeach['stat_name']}", "env:#{@env}", "source:sys_time_model"])
+    end
+    # sum all db time 24 hrs
+    @dog.emit_point("vacols_performance", "#{sadt[0]['dbtime']}", 
+        :tags => ["name:sum_all_db_time_24hrs", "env:#{@env}", "source:ash"])
+    # caseflow db time 24 hrs (ash)
+    @dog.emit_point("vacols_performance", "#{cdt[0]['dbtime']}", 
+        :tags => ["name:caseflow_db_time_24hrs", "env:#{@env}", "source:ash"])
+  end
+
 end

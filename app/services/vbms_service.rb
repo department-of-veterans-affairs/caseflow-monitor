@@ -29,11 +29,13 @@ class VBMSService < MonitorService
   end
 
   def query_service
-    filenum = Rails.application.secrets.target_file_num.split(",").sample.strip
-    request = VBMS::Requests::ListDocuments.new(filenum)
-    doc = @client.send_request(request)
-    if doc.length > 0
-      @pass = true
+    if !@datadog_emit
+      filenum = Rails.application.secrets.target_file_num.split(",").sample.strip
+      request = VBMS::Requests::ListDocuments.new(filenum)
+      doc = @client.send_request(request)
+      if doc.length > 0
+        @pass = true
+      end
     end
   end
 

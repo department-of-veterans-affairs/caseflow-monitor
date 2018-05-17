@@ -16,10 +16,12 @@ class BGSClaimantFlashesService < MonitorService
   end
 
   def query_service
-    filenum = Rails.application.secrets.target_file_num.split(",").sample.strip
-    flashes = @bgs_client.claimants.find_flashes(filenum)
-    if !flashes[:ptcpnt_id].blank?
-      @pass = true
+    if !@datadog_emit
+      filenum = Rails.application.secrets.target_file_num.split(",").sample.strip
+      flashes = @bgs_client.claimants.find_flashes(filenum)
+      if !flashes[:ptcpnt_id].blank?
+        @pass = true
+      end
     end
   end
 

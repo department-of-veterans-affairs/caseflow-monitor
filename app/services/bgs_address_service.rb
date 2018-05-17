@@ -16,10 +16,12 @@ class BGSAddressService < MonitorService
   end
 
   def query_service
-    participant_id = Rails.application.secrets.participant_ids.split(",").sample.strip
-    address = @bgs_client.address.find_all_by_participant_id(participant_id)
-    if !address.nil?
-      @pass = true
+    if !@datadog_emit
+      participant_id = Rails.application.secrets.participant_ids.split(",").sample.strip
+      address = @bgs_client.address.find_all_by_participant_id(participant_id)
+      if !address.nil?
+        @pass = true
+      end
     end
   end
 
