@@ -5,7 +5,7 @@ class VacolsService < MonitorService
 
   def initialize
     @connection = nil
-
+    @wait_time_by_class, @sys_time_model, @sum_all_db_time_24hrs, @caseflow_db_time_24hrs = nil
     @name = @@service_name
     @service = "VACOLS"
     @env = ENV['VACOLS_HOST']
@@ -67,14 +67,12 @@ class VacolsService < MonitorService
         group by e.wait_class
         order by 2 desc
       SQL
-      wait_time_by_class = @connection.exec_query(query)
-      wait_time_by_class.each do |wtc|
+      @wait_time_by_class = @connection.exec_query(query)
+      @wait_time_by_class.each do |wtc|
         latency_gauge.set({
           source: 'ash',
           name: wtc['wait_event']
         }, wtc['total_wait_time'])
-        @dog.emit_point("vacols_performance", "#{wtc['total_wait_time']}", 
-          :tags => ["name:#{wtc['wait_event']}", "env:#{@env}", "source:ash"])
       end
     
       # Overall system time that includes DB Time, DB CPU and various metrics
@@ -82,16 +80,13 @@ class VacolsService < MonitorService
         select stat_name, value "time"
         from v$sys_time_model
       SQL
-      sys_time_model = @connection.exec_query(query)
-      sys_time_model.each do |stm|
+      @sys_time_model = @connection.exec_query(query)
+      @sys_time_model.each do |stm|
         latency_gauge.set({
           source: 'sys_time_model',
           name: stm['stat_name']
         }, stm['time'])
-        @dog.emit_point("vacols_performance", "#{stm['time']}",
-          :tags => ["name:#{stm['stat_name']}", "env:#{@env}", "source:sys_time_model"])
       end
-
 
       # Summing DB Time from ASH table
       query = <<-SQL
@@ -101,16 +96,14 @@ class VacolsService < MonitorService
           and session_type <> 'BACKGROUND'
         order by count(*) desc
       SQL
-      sum_all_db_time_24hrs = @connection.exec_query(query)
+      @sum_all_db_time_24hrs = @connection.exec_query(query)
       latency_gauge.set({
         source: 'ash',
         name: 'sum_all_db_time_24hrs'
       }, sum_all_db_time_24hrs[0]['dbtime'])
-      @dog.emit_point("vacols_performance", "#{sum_all_db_time_24hrs[0]['dbtime']}", 
-        :tags => ["name:sum_all_db_time_24hrs", "env:#{@env}", "source:ash"])
-
+      
       # Summing Caseflow DB Time from ASH table
-      caseflow_db_time_24hrs = @connection.exec_query(<<-EQL)
+      @caseflow_db_time_24hrs = @connection.exec_query(<<-EQL)
         select count(*) DBTime
         from v$active_session_history
         where sample_time > sysdate - 1
@@ -122,8 +115,6 @@ class VacolsService < MonitorService
         source: 'ash',
         name: 'caseflow_db_time_24hrs'
       }, caseflow_db_time_24hrs[0]['dbtime'])
-      @dog.emit_point("vacols_performance", "#{caseflow_db_time_24hrs[0]['dbtime']}", 
-        :tags => ["name:caseflow_db_time_24hrs", "env:#{@env}", "source:ash"])
 
       # Update a test note periodically with a timestamp to verify that DMS 
       # replication is running as expected.
@@ -150,4 +141,32 @@ class VacolsService < MonitorService
 
     @pass = true
   end
+
+  def update_datadog_metrics
+    # call the parent function
+    super
+    # then execute the bottom for vacols specific
+    update_vacols_dd_metrics_exectime = Benchmark.realtime do
+      @dog.batch_metrics do
+        # wait time by class
+        @wait_time_by_class.each do |wtceach|
+          @dog.emit_point("vacols_performance", "#{wtceach['total_wait_time']}",
+            :tags => ["name:#{wtceach['wait_event']}", "env:#{@env}", "source:ash"])
+        end
+        # sys time model
+        @sys_time_model.each do |stmeach|
+          @dog.emit_point("vacols_performance", "#{stmeach['time']}",
+            :tags => ["name:#{stmeach['stat_name']}", "env:#{@env}", "source:sys_time_model"])
+        end
+        # sum all db time 24 hrs
+        @dog.emit_point("vacols_performance", "#{@sum_all_db_time_24hrs[0]['dbtime']}", 
+          :tags => ["name:sum_all_db_time_24hrs", "env:#{@env}", "source:ash"])
+        # caseflow db time 24 hrs (ash)
+        @dog.emit_point("vacols_performance", "#{@caseflow_db_time_24hrs[0]['dbtime']}", 
+          :tags => ["name:caseflow_db_time_24hrs", "env:#{@env}", "source:ash"])
+      end
+    end
+    Rails.logger.info("Vacols Service DD Exec Time took: %p" % update_vacols_dd_metrics_exectime)
+  end
+
 end

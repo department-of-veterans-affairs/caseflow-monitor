@@ -23,3 +23,7 @@
 
 # Ignore RubyMine files
 .idea
+
+# Ignore bundle gems and assets
+vendor/*
+public/*
