@@ -124,8 +124,6 @@ class MonitorService
     if vacols_service
       report_vacols_service_to_datadog(@wait_time_by_class, @sys_time_model, @sum_all_db_time_24hrs, @caseflow_db_time_24hrs)
     end
-
-
     save
     @pass
   end
