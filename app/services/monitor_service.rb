@@ -175,21 +175,23 @@ class MonitorService
 
   ## Update Datadog metrics or creates them
   def update_datadog_metrics
+    update_dd_metrics_exectime = Benchmark.realtime do
+      @dog.batch_metrics do
+        @dog.emit_point("#{@name}.#{@api}.#{@env}.latency_summary","#{@latency}", 
+          :tags => ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
+        @dog.emit_point("#{@name}.#{@api}.#{@env}.latency_gauge","#{@latency}", 
+          :tags => ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
+      end
 
-    @dog.batch_metrics do
-      @dog.emit_point("#{@name}.#{@api}.#{@env}.latency_summary","#{@latency}", 
-        :tags => ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
-      @dog.emit_point("#{@name}.#{@api}.#{@env}.latency_gauge","#{@latency}", 
-        :tags => ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
+      if @pass == true
+        @dog.emit_point("#{@name}.#{@api}.#{@env}.successful_query_total","1", 
+          :tags => ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
+      else
+        @dog.emit_point("#{@name}.#{@api}.#{@env}.failed_query_total","1", 
+          :tags => ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
+      end
     end
-
-    if @pass == true
-      @dog.emit_point("#{@name}.#{@api}.#{@env}.successful_query_total","1", 
-        :tags => ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
-    else
-      @dog.emit_point("#{@name}.#{@api}.#{@env}.failed_query_total","1", 
-        :tags => ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
-    end
+    Rails.logger.info("Latency DD Exec Time took: %p" % update_dd_metrics_exectime)
   end
 end
 
