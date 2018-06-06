@@ -67,8 +67,8 @@ class VacolsService < MonitorService
         group by e.wait_class
         order by 2 desc
       SQL
-      wait_time_by_class = @connection.exec_query(query)
-      wait_time_by_class.each do |wtc|
+      @wait_time_by_class = @connection.exec_query(query)
+      @wait_time_by_class.each do |wtc|
         latency_gauge.set({
           source: 'ash',
           name: wtc['wait_event']
@@ -80,8 +80,8 @@ class VacolsService < MonitorService
         select stat_name, value "time"
         from v$sys_time_model
       SQL
-      sys_time_model = @connection.exec_query(query)
-      sys_time_model.each do |stm|
+      @sys_time_model = @connection.exec_query(query)
+      @sys_time_model.each do |stm|
         latency_gauge.set({
           source: 'sys_time_model',
           name: stm['stat_name']
@@ -96,14 +96,14 @@ class VacolsService < MonitorService
           and session_type <> 'BACKGROUND'
         order by count(*) desc
       SQL
-      sum_all_db_time_24hrs = @connection.exec_query(query)
+      @sum_all_db_time_24hrs = @connection.exec_query(query)
       latency_gauge.set({
         source: 'ash',
         name: 'sum_all_db_time_24hrs'
       }, sum_all_db_time_24hrs[0]['dbtime'])
       
       # Summing Caseflow DB Time from ASH table
-      caseflow_db_time_24hrs = @connection.exec_query(<<-EQL)
+      @caseflow_db_time_24hrs = @connection.exec_query(<<-EQL)
         select count(*) DBTime
         from v$active_session_history
         where sample_time > sysdate - 1
@@ -140,28 +140,7 @@ class VacolsService < MonitorService
     end
 
     @pass = true
-    if @datadog_emit
-      report_to_datadog(wait_time_by_class, sys_time_model, sum_all_db_time_24hrs, caseflow_db_time_24hrs)
-    end
-  end
-
-  def report_to_datadog(wtc, stm, sadt, cdt)
-    # wait time by class
-    wtc.each do |wtceach|
-      @dog.emit_point("vacols_performance", "#{wtceach['total_wait_time']}",
-        :tags => ["name:#{wtceach['wait_event']}", "env:#{@env}", "source:ash"])
-    end
-    # sys time model
-    stm.each do |stmeach|
-      @dog.emit_point("vacols_performance", "#{stmeach['time']}",
-        :tags => ["name:#{stmeach['stat_name']}", "env:#{@env}", "source:sys_time_model"])
-    end
-    # sum all db time 24 hrs
-    @dog.emit_point("vacols_performance", "#{sadt[0]['dbtime']}", 
-        :tags => ["name:sum_all_db_time_24hrs", "env:#{@env}", "source:ash"])
-    # caseflow db time 24 hrs (ash)
-    @dog.emit_point("vacols_performance", "#{cdt[0]['dbtime']}", 
-        :tags => ["name:caseflow_db_time_24hrs", "env:#{@env}", "source:ash"])
+    @vacols_service = true
   end
 
 end

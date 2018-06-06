@@ -15,10 +15,8 @@ class VVAService < MonitorService
   end
 
   def query_service
-    if !@datadog_emit
-      documents = @client.document_list.get_by_claim_number(Rails.application.secrets.vva_file_num)
-      @pass = true if documents.size > 0
-    end
+    documents = @client.document_list.get_by_claim_number(Rails.application.secrets.vva_file_num)
+    @pass = true if documents.size > 0
   end
 
 

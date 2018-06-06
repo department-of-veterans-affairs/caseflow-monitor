@@ -79,12 +79,13 @@ class MonitorService
     @time = Time.now
     @pass = false
     @count += 1
-    @datadog_emit = false
+    @vacols_service = false
+    
+    @wait_time_by_class, @sys_time_model, @sum_all_db_time_24hrs, @caseflow_db_time_24hrs = nil
+
     latency = Benchmark.realtime do
       query_service
     end
-    @datadog_emit = true
-    query_service
 
     if @pass == true
       @failed_rate_5 -= @failed_rate_5 / 5.0
@@ -119,10 +120,14 @@ class MonitorService
     @latency = latency
 
     self.update_prometheus_metrics
-    
+    self.update_datadog_metrics
+    if vacols_service
+      report_vacols_service_to_datadog(@wait_time_by_class, @sys_time_model, @sum_all_db_time_24hrs, @caseflow_db_time_24hrs)
+    end
+
+
     save
     @pass
-    self.update_datadog_metrics
   end
 
   # Remark
@@ -195,3 +200,22 @@ class MonitorService
     end
   end
 end
+
+def report_vacols_service_to_datadog(wtc, stm, sadt, cdt)
+    # wait time by class
+    wtc.each do |wtceach|
+      @dog.emit_point("vacols_performance", "#{wtceach['total_wait_time']}",
+        :tags => ["name:#{wtceach['wait_event']}", "env:#{@env}", "source:ash"])
+    end
+    # sys time model
+    stm.each do |stmeach|
+      @dog.emit_point("vacols_performance", "#{stmeach['time']}",
+        :tags => ["name:#{stmeach['stat_name']}", "env:#{@env}", "source:sys_time_model"])
+    end
+    # sum all db time 24 hrs
+    @dog.emit_point("vacols_performance", "#{sadt[0]['dbtime']}", 
+        :tags => ["name:sum_all_db_time_24hrs", "env:#{@env}", "source:ash"])
+    # caseflow db time 24 hrs (ash)
+    @dog.emit_point("vacols_performance", "#{cdt[0]['dbtime']}", 
+        :tags => ["name:caseflow_db_time_24hrs", "env:#{@env}", "source:ash"])
+  end

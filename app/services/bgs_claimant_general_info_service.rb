@@ -16,12 +16,10 @@ class BGSClaimantGeneralInfoService < MonitorService
   end
 
   def query_service
-    if !@datadog_emit
-      participant_id = Rails.application.secrets.participant_ids.split(",").sample.strip
-      general_info = @bgs_client.claimants.find_general_information_by_participant_id(participant_id)
-      if !general_info[:number_of_award_benes].blank?
-        @pass = true
-      end
+    participant_id = Rails.application.secrets.participant_ids.split(",").sample.strip
+    general_info = @bgs_client.claimants.find_general_information_by_participant_id(participant_id)
+    if !general_info[:number_of_award_benes].blank?
+      @pass = true
     end
   end
 

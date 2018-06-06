@@ -16,12 +16,10 @@ class BGSBenefitsService < MonitorService
   end
 
   def query_service
-    if !@datadog_emit
-      filenum = Rails.application.secrets.target_file_num.split(",").sample.strip
-      benefit = @bgs_client.claims.find_by_vbms_file_number(filenum)
-      if !benefit.nil?
-        @pass = true
-      end
+    filenum = Rails.application.secrets.target_file_num.split(",").sample.strip
+    benefit = @bgs_client.claims.find_by_vbms_file_number(filenum)
+    if !benefit.nil?
+      @pass = true
     end
   end
 
