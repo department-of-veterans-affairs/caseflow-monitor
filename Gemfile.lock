@@ -13,7 +13,7 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
-  revision: d91deab540d7bc46822db1226a382d3deacc7535
+  revision: fd9771bafc48d98b56909c4466721da312a22739
   branch: master
   specs:
     connect_vbms (1.2.0)
@@ -211,7 +211,7 @@ GEM
       builder (>= 2.1.2)
       gyoku (~> 1.2)
       httpi (~> 2.3)
-      nokogiri (>= 1.8.1)
+      nokogiri (>= 1.8.2)
       nori (~> 2.4)
       wasabi (~> 3.4)
     socksify (1.7.1)
@@ -240,7 +240,7 @@ GEM
       sass (~> 3.4)
     wasabi (3.5.0)
       httpi (~> 2.0)
-      nokogiri (>= 1.4.2)
+      nokogiri (>= 1.8.2)
     web-console (3.6.2)
       actionview (>= 5.0)
       activemodel (>= 5.0)
@@ -258,6 +258,8 @@ GEM
       xmlmapper (>= 0.7.3)
     xmlmapper (0.7.3)
       nokogiri (~> 1.5)
+
+
 
 PLATFORMS
   ruby
