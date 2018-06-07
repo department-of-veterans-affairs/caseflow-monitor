@@ -2,10 +2,14 @@ require "benchmark"
 
 class VacolsService < MonitorService
   @@service_name = "VACOLS"
+  
 
   def initialize
     @connection = nil
-    @wait_time_by_class, @sys_time_model, @sum_all_db_time_24hrs, @caseflow_db_time_24hrs = nil
+    @wait_time_by_class = nil
+    @sys_time_model = nil 
+    @sum_all_db_time_24hrs = nil 
+    @caseflow_db_time_24hrs = nil
     @name = @@service_name
     @service = "VACOLS"
     @env = ENV['VACOLS_HOST']
@@ -100,7 +104,7 @@ class VacolsService < MonitorService
       latency_gauge.set({
         source: 'ash',
         name: 'sum_all_db_time_24hrs'
-      }, sum_all_db_time_24hrs[0]['dbtime'])
+      }, @sum_all_db_time_24hrs[0]['dbtime'])
       
       # Summing Caseflow DB Time from ASH table
       @caseflow_db_time_24hrs = @connection.exec_query(<<-EQL)
@@ -114,7 +118,7 @@ class VacolsService < MonitorService
       latency_gauge.set({
         source: 'ash',
         name: 'caseflow_db_time_24hrs'
-      }, caseflow_db_time_24hrs[0]['dbtime'])
+      }, @caseflow_db_time_24hrs[0]['dbtime'])
 
       # Update a test note periodically with a timestamp to verify that DMS 
       # replication is running as expected.
