@@ -143,18 +143,23 @@ class MonitorJob < ActiveJob::Base
       loop do
         sleep 60
         @worker.each do |service_name, worker_data|
+          serviceClass = worker_data[:serviceClass]
           begin
             duration = Time.now - worker_data[:service].time
             if duration > 120
               Rails.logger.warn("Zombie detected, killing thread and restarting #{worker_data[:thread]}")
               worker_data[:service].failed
               worker_data[:thread].kill
-              worker_data[:thread].join 1
-              run_query(worker_data[:serviceClass])
+              begin
+                worker_data[:thread].join 1
+              rescue Exception => e
+                Rails.logger.warn("Error thrown by worker #{serviceClass}:\n#{e.message}\n#{e.backtrace.join("\n")}")
+              end
+              run_query(serviceClass)
             end
           rescue Exception => e
-            Rails.logger.warn(e.message)
-            Rails.logger.warn(e.backtrace)
+            Rails.logger.warn(
+              "Error thrown while processing worker #{serviceClass}:\n#{e.message}\n#{e.backtrace.join("\n")}")
           end
         end
       end
