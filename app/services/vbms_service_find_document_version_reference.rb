@@ -1,7 +1,7 @@
 require 'vbms'
 
 class VBMSServiceFindDocumentVersionReference < MonitorService
-  @@service_name = "VBMS.FindDocumentVersionReference"
+  @@service_name = "VBMS"
 
   def initialize
     @connection = nil
