@@ -76,7 +76,6 @@ class MonitorJob < ActiveJob::Base
         Fakes::BGSPersonFilenumberService,
         Fakes::BGSVeteranService,
         Fakes::VacolsService,
-        Fakes::VBMSService,
         Fakes::VBMSServiceFindDocumentVersionReference,
         Fakes::VVAService,
         Fakes::LaggyService,
@@ -95,7 +94,6 @@ class MonitorJob < ActiveJob::Base
         BGSPersonFilenumberService,
         BGSVeteranService,
         VacolsService,
-        VBMSService,
         VBMSServiceFindDocumentVersionReference,
         VVAService
       ]
