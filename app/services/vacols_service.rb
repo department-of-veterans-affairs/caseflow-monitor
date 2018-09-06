@@ -122,11 +122,12 @@ class VacolsService < MonitorService
 
       # Update a test note periodically with a timestamp to verify that DMS 
       # replication is running as expected.
-      dms_update = <<-EQL
-        update VACOLS.CORRES set SNOTES= (to_char(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')) 
-        where STAFKEY='#{Rails.application.secrets.dms_checker_staff_key}'
-      EQL
-      @connection.execute(dms_update)
+      # Removed since this is now being done from Step Functions with lambdas
+      #dms_update = <<-EQL
+      #  update VACOLS.CORRES set SNOTES= (to_char(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')) 
+      #  where STAFKEY='#{Rails.application.secrets.dms_checker_staff_key}'
+      #EQL
+      #@connection.execute(dms_update)
     rescue => e
       Rails.logger.warn(e.message)
 
