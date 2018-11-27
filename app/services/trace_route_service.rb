@@ -1,8 +1,11 @@
 gem 'dogapi'
 
 class TraceRouteService
-  attr_accessor :last_result, :name
+  attr_accessor :name
 
+  @@service_name = "TraceRouteService"
+
+  # This RegEx pulls out the IP address as well as the subsequent latencies (up to 3)
   REG_EX = /\((\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)\)(?:\s*(\d*\.?\d*)\s*ms)?(?:\s*(\d*\.?\d*)\s*ms)?(?:\s*(\d*\.?\d*)\s*ms)?/
   IP_MAPPING = {
     "208" => "EWIS (CRRC)",
@@ -26,14 +29,18 @@ class TraceRouteService
 
   def initialize
     @data_dog = Dogapi::Client.new(ENV["DD_API_KEY"])
+    @name = @@service_name
+  end
+
+  def self.service_name
+    @@service_name
   end
 
   def query
-    #ENV["VACOLS_HOST"]
     output = `sudo traceroute -T #{ENV["VACOLS_HOST"]}`
 
     lines = output.split("\n")
-    latencies = lines.map do |line|
+    endpoint_latencies = lines.map do |line|
       line.scan(REG_EX)
     end.flatten(1).reduce({}) do |object, groups|
       ip = groups.first
@@ -55,7 +62,7 @@ class TraceRouteService
     end
 
     @data_dog.batch_metrics do
-      latencies.values.each do |latency|
+      endpoint_latencies.values.each do |latency|
         latency[:latencies].each do |value|
           
           @data_dog.emit_point(
