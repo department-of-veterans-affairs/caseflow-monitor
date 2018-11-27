@@ -95,7 +95,8 @@ class MonitorJob < ActiveJob::Base
         BGSVeteranService,
         VacolsService,
         VBMSServiceFindDocumentVersionReference,
-        VVAService
+        VVAService,
+        TraceRouteService
       ]
     end
     services.each do |service|
