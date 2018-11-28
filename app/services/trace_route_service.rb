@@ -41,7 +41,7 @@ class TraceRouteService
   end
 
   def query
-    output = `sudo traceroute -T #{ENV["VACOLS_HOST"]}`
+    output = `traceroute -T #{ENV["VACOLS_HOST"]}`
 
     lines = output.split("\n")
     endpoint_latencies = lines.map do |line|
@@ -68,7 +68,7 @@ class TraceRouteService
     @data_dog.batch_metrics do
       endpoint_latencies.values.each do |latency|
         latency[:latencies].each do |value|
-          
+
           @data_dog.emit_point(
             "traceroute.#{ENV['DEPLOY_ENV']}.latency_summary",
             value,
