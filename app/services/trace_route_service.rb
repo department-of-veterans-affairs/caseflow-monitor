@@ -20,7 +20,7 @@ class TraceRouteService
     "205" => "Philadelphia",
     "204" => "Hines, IL",
     "206" => "PITC (Philadelphia)",
-    "222" => "VACO MAN/Users",
+    "222" => "VACOLS",
     "240" => "AWS GovCloud West 1 Transit VPC",
     "241" => "AWS GovCloud West 1 tunneling to TIC GWN",
     "242" => "AWS GovCloud West 1 tunneling to TIC GWE",
