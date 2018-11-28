@@ -32,6 +32,10 @@ class TraceRouteService
     @name = @@service_name
   end
 
+  def self.prevalidate
+    true
+  end
+
   def self.service_name
     @@service_name
   end
