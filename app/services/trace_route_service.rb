@@ -1,7 +1,7 @@
 gem 'dogapi'
 
 class TraceRouteService
-  attr_accessor :name
+  attr_accessor :name, :time
 
   @@service_name = "TraceRouteService"
 
@@ -30,6 +30,7 @@ class TraceRouteService
   def initialize
     @data_dog = Dogapi::Client.new(ENV["DD_API_KEY"])
     @name = @@service_name
+    @time = 0
   end
 
   def self.prevalidate
@@ -41,6 +42,8 @@ class TraceRouteService
   end
 
   def query
+    @time = Time.now
+
     output = `traceroute -T #{ENV["VACOLS_HOST"]}`
 
     lines = output.split("\n")
