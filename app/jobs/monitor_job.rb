@@ -13,8 +13,6 @@ class MonitorJob < ActiveJob::Base
   def perform()
 
     begin
-      setup_prometheus_metrics
-
       # setup all the services that need to be monitored
       monitor_services = setup_services
 
@@ -39,25 +37,6 @@ class MonitorJob < ActiveJob::Base
 
   def max_attempts
     1
-  end
-
-  def setup_prometheus_metrics
-    prometheus = Prometheus::Client.registry
-    prometheus.register(
-      Prometheus::Client::Counter.new(:successful_query_total, 'Total number of successful queries')
-    )
-    prometheus.register(
-      Prometheus::Client::Counter.new(:failed_query_total, 'Total number of failed queries')
-    )
-    prometheus.register(
-      Prometheus::Client::Gauge.new(:latency_gauge, 'Samples of query latency')
-    )
-    prometheus.register(
-      Prometheus::Client::Summary.new(:latency_summary, 'Summary of query latency')
-    )
-    prometheus.register(
-      Prometheus::Client::Gauge.new(:vacols_performance, 'Samples of VACOLS performance metrics')
-    )
   end
 
   # Setup all target monitoring services. The target services will be
