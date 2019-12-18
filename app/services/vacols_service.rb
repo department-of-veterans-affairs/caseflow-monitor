@@ -2,13 +2,13 @@ require "benchmark"
 
 class VacolsService < MonitorService
   @@service_name = "VACOLS"
-  
+
 
   def initialize
     @connection = nil
     @wait_time_by_class = nil
-    @sys_time_model = nil 
-    @sum_all_db_time_24hrs = nil 
+    @sys_time_model = nil
+    @sum_all_db_time_24hrs = nil
     @caseflow_db_time_24hrs = nil
     @name = @@service_name
     @service = "VACOLS"
@@ -42,9 +42,6 @@ class VacolsService < MonitorService
     end
 
     begin
-
-      latency_gauge = Prometheus::Client.registry.get(:vacols_performance)
-
       query = <<-SQL
         select user_id from DBA_USERS where username = 'DSUSER'
       SQL
@@ -61,9 +58,9 @@ class VacolsService < MonitorService
 
       # A continuous increment of total non-idle wait time by class. The wait class
       # provides a breakdown of where they are occurring.
-      # 
+      #
       query = <<-SQL
-        select e.wait_class "wait_event", 
+        select e.wait_class "wait_event",
           sum(h.wait_time + h.time_waited) "total_wait_time"
         from v$active_session_history h, v$event_name e
         where h.event_id = e.event_id
@@ -72,25 +69,13 @@ class VacolsService < MonitorService
         order by 2 desc
       SQL
       @wait_time_by_class = @connection.exec_query(query)
-      @wait_time_by_class.each do |wtc|
-        latency_gauge.set({
-          source: 'ash',
-          name: wtc['wait_event']
-        }, wtc['total_wait_time'])
-      end
-    
+
       # Overall system time that includes DB Time, DB CPU and various metrics
       query = <<-SQL
         select stat_name, value "time"
         from v$sys_time_model
       SQL
       @sys_time_model = @connection.exec_query(query)
-      @sys_time_model.each do |stm|
-        latency_gauge.set({
-          source: 'sys_time_model',
-          name: stm['stat_name']
-        }, stm['time'])
-      end
 
       # Summing DB Time from ASH table
       query = <<-SQL
@@ -101,11 +86,7 @@ class VacolsService < MonitorService
         order by count(*) desc
       SQL
       @sum_all_db_time_24hrs = @connection.exec_query(query)
-      latency_gauge.set({
-        source: 'ash',
-        name: 'sum_all_db_time_24hrs'
-      }, @sum_all_db_time_24hrs[0]['dbtime'])
-      
+
       # Summing Caseflow DB Time from ASH table
       @caseflow_db_time_24hrs = @connection.exec_query(<<-EQL)
         select count(*) DBTime
@@ -115,10 +96,6 @@ class VacolsService < MonitorService
           and v$active_session_history.user_id = #{dsuser_id}
         order by count(*) desc
       EQL
-      latency_gauge.set({
-        source: 'ash',
-        name: 'caseflow_db_time_24hrs'
-      }, @caseflow_db_time_24hrs[0]['dbtime'])
 
     rescue => e
       Rails.logger.warn(e.message)
@@ -129,7 +106,7 @@ class VacolsService < MonitorService
          LOST_CONNECTION_ERROR_CODES.include?(e.original_exception.code)
         Rails.logger.warn("VACOLS connection dropped, reconnecting on next query")
         @connection = nil
-      end      
+      end
 
       # Propagate the exception up the stack to fail this query. This way, the
       # failure will be recorded in Prometheus / Grafana.
@@ -156,10 +133,10 @@ class VacolsService < MonitorService
             :tags => ["name:#{stmeach['stat_name']}", "env:#{@env}", "source:sys_time_model"])
         end
         # sum all db time 24 hrs
-        @dog.emit_point("vacols_performance", "#{@sum_all_db_time_24hrs[0]['dbtime']}", 
+        @dog.emit_point("vacols_performance", "#{@sum_all_db_time_24hrs[0]['dbtime']}",
           :tags => ["name:sum_all_db_time_24hrs", "env:#{@env}", "source:ash"])
         # caseflow db time 24 hrs (ash)
-        @dog.emit_point("vacols_performance", "#{@caseflow_db_time_24hrs[0]['dbtime']}", 
+        @dog.emit_point("vacols_performance", "#{@caseflow_db_time_24hrs[0]['dbtime']}",
           :tags => ["name:caseflow_db_time_24hrs", "env:#{@env}", "source:ash"])
       end
     end
