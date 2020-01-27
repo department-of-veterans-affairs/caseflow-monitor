@@ -1,0 +1,13 @@
+# Makefile example
+
+install:
+	bundle check || bundle install
+
+db-migrate: migrate
+
+etl-migrate: migrate
+
+migrate:
+	bundle exec rake db:migrate
+
+.PHONY: db-migrate etl-migrate
