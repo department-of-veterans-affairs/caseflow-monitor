@@ -8,6 +8,7 @@ db-migrate: migrate
 etl-migrate: migrate
 
 migrate:
-	bundle exec rake db:migrate
+	@echo "This application does not have migrations"
+	@exit 0
 
 .PHONY: db-migrate etl-migrate
