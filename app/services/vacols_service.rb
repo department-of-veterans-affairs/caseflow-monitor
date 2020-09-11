@@ -122,21 +122,25 @@ class VacolsService < MonitorService
     update_vacols_dd_metrics_exectime = Benchmark.realtime do
       @dog.batch_metrics do
         # wait time by class
-        @wait_time_by_class.each do |wtceach|
+        (@wait_time_by_class || []).each do |wtceach|
           @dog.emit_point("vacols_performance", "#{wtceach['total_wait_time']}",
             :tags => ["name:#{wtceach['wait_event']}", "env:#{@env}", "source:ash"])
         end
         # sys time model
-        @sys_time_model.each do |stmeach|
+        (@sys_time_model || []).each do |stmeach|
           @dog.emit_point("vacols_performance", "#{stmeach['time']}",
             :tags => ["name:#{stmeach['stat_name']}", "env:#{@env}", "source:sys_time_model"])
         end
         # sum all db time 24 hrs
-        @dog.emit_point("vacols_performance", "#{@sum_all_db_time_24hrs[0]['dbtime']}",
-          :tags => ["name:sum_all_db_time_24hrs", "env:#{@env}", "source:ash"])
+        unless @sum_all_db_time_24hrs.nil? || @sum_all_db_time_24hrs.empty?
+          @dog.emit_point("vacols_performance", "#{@sum_all_db_time_24hrs.first['dbtime']}",
+            :tags => ["name:sum_all_db_time_24hrs", "env:#{@env}", "source:ash"])
+        end
         # caseflow db time 24 hrs (ash)
-        @dog.emit_point("vacols_performance", "#{@caseflow_db_time_24hrs[0]['dbtime']}",
-          :tags => ["name:caseflow_db_time_24hrs", "env:#{@env}", "source:ash"])
+        unless @caseflow_db_time_24hrs.nil? || @caseflow_db_time_24hrs.empty?
+          @dog.emit_point("vacols_performance", "#{@caseflow_db_time_24hrs.first['dbtime']}",
+            :tags => ["name:caseflow_db_time_24hrs", "env:#{@env}", "source:ash"])
+        end
       end
     end
     Rails.logger.info("Vacols Service DD Exec Time took: %p" % update_vacols_dd_metrics_exectime)
