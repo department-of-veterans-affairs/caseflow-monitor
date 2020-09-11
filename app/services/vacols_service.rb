@@ -149,9 +149,7 @@ class VacolsService < MonitorService
   private
 
   def should_reconnect_exception?(e)
-    lost_connection = e.cause.is_a?(OCIError) && LOST_CONNECTION_ERROR_CODES.include?(e.cause&.code)
-    closed_connection = e.cause.is_a?(OCIException) && e.message.include?("OCI8 was already closed.")
-
-    lost_connection || closed_connection
+    e.cause.is_a?(OCIException) &&
+      (LOST_CONNECTION_ERROR_CODES.include?(e.cause&.code) || e.message.include?("OCI8 was already closed."))
   end
 end
