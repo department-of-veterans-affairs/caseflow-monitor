@@ -102,8 +102,7 @@ class VacolsService < MonitorService
 
       # If this is a connectivity issue, reset the connection pointer and
       # force the connection to be re-established in the next query.
-      if e.original_exception.is_a?(OCIError) &&
-         LOST_CONNECTION_ERROR_CODES.include?(e.original_exception.code)
+      if should_retry_exception?(e)
         Rails.logger.warn("VACOLS connection dropped, reconnecting on next query")
         @connection = nil
       end
@@ -143,4 +142,12 @@ class VacolsService < MonitorService
     Rails.logger.info("Vacols Service DD Exec Time took: %p" % update_vacols_dd_metrics_exectime)
   end
 
+  private
+
+  def should_retry_exception?(e)
+    lost_connection = e.cause.is_a?(OCIError) && LOST_CONNECTION_ERROR_CODES.include?(e.cause&.code)
+    closed_connection = e.cause.is_a?(OCIException) && e.message.include?("OCI8 was already closed.")
+
+    lost_connection || closed_connection
+  end
 end
