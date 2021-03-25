@@ -40,8 +40,8 @@ GIT
   specs:
     bgs (0.3)
       httpclient
-      nokogiri
-      savon
+      nokogiri (>= 1.11.0.rc4)
+      savon (~> 2.12)
 
 GEM
   remote: https://rubygems.org/
@@ -90,6 +90,8 @@ GEM
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
+    addressable (2.7.0)
+      public_suffix (>= 2.0.2, < 5.0)
     akami (1.3.1)
       gyoku (>= 0.4.0)
       nokogiri
@@ -125,7 +127,7 @@ GEM
     gyoku (1.3.1)
       builder (>= 2.1.2)
     httpclient (2.8.3)
-    httpi (2.4.4)
+    httpi (2.4.5)
       rack
       socksify
     i18n (1.8.2)
@@ -166,6 +168,7 @@ GEM
     pry (0.13.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    public_suffix (4.0.6)
     puma (3.12.6)
     racc (1.5.2)
     rack (2.2.3)
@@ -212,7 +215,7 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
-    savon (2.12.0)
+    savon (2.12.1)
       akami (~> 1.2)
       builder (>= 2.1.2)
       gyoku (~> 1.2)
@@ -242,7 +245,8 @@ GEM
     us_web_design_standards (0.0.2)
       railties
       sass (~> 3.4)
-    wasabi (3.5.0)
+    wasabi (3.6.1)
+      addressable
       httpi (~> 2.0)
       nokogiri (>= 1.4.2)
     web-console (3.7.0)
