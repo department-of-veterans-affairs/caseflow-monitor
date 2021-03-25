@@ -35,13 +35,13 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/ruby-bgs.git
-  revision: 794811107e580321a4b8838c85027ad2fa9136a2
+  revision: 98547485d863f2f0d3bb9a1b9ec92a8fe21ba306
   branch: master
   specs:
-    bgs (0.2)
+    bgs (0.3)
       httpclient
-      nokogiri (~> 1.10.4)
-      savon (~> 2.12)
+      nokogiri
+      savon
 
 GEM
   remote: https://rubygems.org/
@@ -147,9 +147,10 @@ GEM
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
     method_source (1.0.0)
-    mimemagic (0.3.4)
+    mimemagic (0.3.7)
+      nokogiri (~> 1.11.2)
     mini_mime (1.0.2)
-    mini_portile2 (2.4.0)
+    mini_portile2 (2.5.0)
     minitest (5.14.0)
     momentjs-rails (2.20.1)
       railties (>= 3.1)
@@ -158,13 +159,15 @@ GEM
       bourbon (>= 4.0)
       sass (>= 3.3)
     nio4r (2.5.2)
-    nokogiri (1.10.9)
-      mini_portile2 (~> 2.4.0)
+    nokogiri (1.11.2)
+      mini_portile2 (~> 2.5.0)
+      racc (~> 1.4)
     nori (2.6.0)
     pry (0.13.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
     puma (3.12.6)
+    racc (1.5.2)
     rack (2.2.3)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -287,4 +290,4 @@ DEPENDENCIES
   web-console (>= 3.4.0)
 
 BUNDLED WITH
-   1.17.1
+   1.17.3
