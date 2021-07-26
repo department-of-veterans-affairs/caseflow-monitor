@@ -15,6 +15,9 @@ class VVAService < MonitorService
   end
 
   def query_service
+    # All failures in the call to get_by_claim_number (invalid login credentials, file number too short)
+    # should raise a VVA::SOAPError. If the call to get_by_claim_number succeeds then @pass will be true,
+    # even if there are no documents.
     @client.document_list.get_by_claim_number(Rails.application.secrets.vva_file_num)
     @pass = true
   end
