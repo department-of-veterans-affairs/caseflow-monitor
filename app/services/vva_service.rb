@@ -18,7 +18,14 @@ class VVAService < MonitorService
     # All failures in the call to get_by_claim_number (invalid login credentials, file number too short)
     # should raise a VVA::SOAPError. If the call to get_by_claim_number succeeds then @pass will be true,
     # even if there are no documents.
-    @client.document_list.get_by_claim_number(Rails.application.secrets.vva_file_num)
+
+    # Use ENV variable directly here instead of Rails.application.secrets because ERB.new() is converting input numbers
+    # with leading zeroes to integers and changing their value as a result. Our current production VVA_FILE_NUM starts
+    # with a zero, so VVA status checks were failing.
+    # 
+    # Reference: https://github.com/rails/rails/blob/5-2-stable/railties/lib/rails/secrets.rb#L29
+    # Example failure: YAML.load(ERB.new("example: 012345").result) # => {"example"=>5349}
+    @client.document_list.get_by_claim_number(ENV["VVA_FILE_NUM"])
     @pass = true
   end
 
