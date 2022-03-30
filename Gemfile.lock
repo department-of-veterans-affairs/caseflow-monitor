@@ -172,7 +172,8 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (4.0.6)
-    puma (3.12.6)
+    puma (4.3.12)
+      nio4r (~> 2.0)
     racc (1.5.2)
     rack (2.2.3)
     rack-test (1.1.0)
@@ -290,7 +291,7 @@ DEPENDENCIES
   listen (~> 3.0.8)
   logstasher
   pry
-  puma (~> 3.12)
+  puma (~> 4.3)
   rails (~> 5.2.4.2)
   ruby-oci8
   sass-rails (~> 5.0, >= 5.0.6)
