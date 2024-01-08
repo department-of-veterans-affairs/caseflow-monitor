@@ -9,7 +9,7 @@ gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow
 
 gem 'rails', '~> 5.2.4.2'
 gem 'sqlite3'
-gem 'puma', '~> 3.12'
+gem 'puma', '~> 5.6'
 gem 'sass-rails', '~> 5.0', '>= 5.0.6'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.2', '>= 4.2.1'
