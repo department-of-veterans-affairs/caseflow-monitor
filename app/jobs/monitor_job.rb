@@ -49,6 +49,7 @@ class MonitorJob < ActiveJob::Base
       services = [
         Fakes::BGSAddressService,
         Fakes::BGSBenefitsService,
+        Fakes::BGSContentionsByParticipantIdService,
         Fakes::BGSClaimantFlashesService,
         Fakes::BGSClaimantGeneralInfoService,
         Fakes::BGSOrganizationPoaService,
@@ -67,6 +68,7 @@ class MonitorJob < ActiveJob::Base
       services = [
         BGSAddressService,
         BGSBenefitsService,
+        BGSContentionsByParticipantIdService,
         BGSClaimantFlashesService,
         BGSClaimantGeneralInfoService,
         BGSOrganizationPoaService,
