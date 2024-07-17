@@ -74,7 +74,6 @@ class MonitorJob < ActiveJob::Base
         BGSVeteranService,
         VacolsService,
         VBMSServiceFindDocumentVersionReference,
-        VVAService,
         TraceRouteService
       ]
     end
