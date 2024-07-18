@@ -56,7 +56,6 @@ class MonitorJob < ActiveJob::Base
         Fakes::BGSVeteranService,
         Fakes::VacolsService,
         Fakes::VBMSServiceFindDocumentVersionReference,
-        Fakes::VVAService,
         Fakes::LaggyService,
         Fakes::UnreliableService,
         Fakes::AlwaysDownService,
@@ -74,7 +73,6 @@ class MonitorJob < ActiveJob::Base
         BGSVeteranService,
         VacolsService,
         VBMSServiceFindDocumentVersionReference,
-        VVAService,
         TraceRouteService
       ]
     end
