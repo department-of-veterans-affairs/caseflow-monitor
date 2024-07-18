@@ -27,5 +27,3 @@
 # Ignore bundle gems and assets
 vendor/*
 public/*
-
-Makefile
