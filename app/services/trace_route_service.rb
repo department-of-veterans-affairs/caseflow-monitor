@@ -1,5 +1,3 @@
-gem 'dogapi'
-
 class TraceRouteService
   attr_accessor :name, :time
 
@@ -28,7 +26,6 @@ class TraceRouteService
   }.freeze
 
   def initialize
-    @data_dog = Dogapi::Client.new(ENV["DD_API_KEY"])
     @name = @@service_name
     @time = 0
   end
@@ -66,19 +63,6 @@ class TraceRouteService
       end
 
       object
-    end
-
-    @data_dog.batch_metrics do
-      endpoint_latencies.values.each do |latency|
-        latency[:latencies].each do |value|
-
-          @data_dog.emit_point(
-            "traceroute.#{ENV['DEPLOY_ENV']}.latency_summary",
-            value,
-            :tags => ["va_network_endpoint:#{latency[:tag]}", "url:#{latency[:ip]}"].compact
-          )
-        end
-      end
     end
 
     true
