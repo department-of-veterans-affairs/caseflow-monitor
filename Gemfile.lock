@@ -106,6 +106,8 @@ GEM
     d3-rails (5.9.2)
       railties (>= 3.1)
     digest (3.1.1)
+    dogapi (1.39.0)
+      multi_json
     dotenv (2.7.5)
     dotenv-rails (2.7.5)
       dotenv (= 2.7.5)
@@ -154,6 +156,7 @@ GEM
     minitest (5.15.0)
     momentjs-rails (2.20.1)
       railties (>= 3.1)
+    multi_json (1.14.1)
     neat (1.7.4)
       bourbon (>= 4.0)
       sass (>= 3.3)
@@ -291,6 +294,7 @@ DEPENDENCIES
   caseflow!
   coffee-rails (~> 4.2, >= 4.2.1)
   connect_vbms!
+  dogapi
   dotenv-rails (>= 2.1.2)
   jbuilder (~> 2.5)
   jquery-rails (>= 4.3.1)

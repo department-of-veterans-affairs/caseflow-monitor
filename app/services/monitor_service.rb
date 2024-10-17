@@ -1,3 +1,5 @@
+gem 'dogapi'
+
 class MonitorService
 
   attr_accessor :name, :polling_rate_sec, :time
@@ -32,6 +34,11 @@ class MonitorService
     end
 
     save
+
+    # Initialize dog so sub classes can use it as well as this parent abstract class
+    dd_api_key = ENV["DD_API_KEY"]
+    @dog = Dogapi::Client.new(dd_api_key)
+
   end
 
   def save
@@ -62,6 +69,7 @@ class MonitorService
     @failed_rate_5 -= @failed_rate_5 / 5.0
     @failed_rate_5 += 1 / 5.0
     save
+    self.update_datadog_metrics
   end
 
   def query
@@ -105,6 +113,7 @@ class MonitorService
 
     @latency = latency
 
+    self.update_datadog_metrics
     save
     @pass
   end
@@ -113,6 +122,27 @@ class MonitorService
     # Implement the details of the query here.
     # Set @pass to true/false according to the query result.
     raise NotImplementedError.new("Implement the details of the query here")
+  end
+
+  ## Update Datadog metrics or creates them
+  def update_datadog_metrics
+    update_dd_metrics_exectime = Benchmark.realtime do
+      @dog.batch_metrics do
+        @dog.emit_point("#{@name}.#{@api}.#{@env}.latency_summary","#{@latency}",
+          :tags => ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
+        @dog.emit_point("#{@name}.#{@api}.#{@env}.latency_gauge","#{@latency}",
+          :tags => ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
+      end
+
+      if @pass == true
+        @dog.emit_point("#{@name}.#{@api}.#{@env}.successful_query_total","1",
+          :tags => ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
+      else
+        @dog.emit_point("#{@name}.#{@api}.#{@env}.failed_query_total","1",
+          :tags => ["name:#{@name}", "api:#{@api}", "env:#{@env}"])
+      end
+    end
+    Rails.logger.info("Latency DD Exec Time took: %p" % update_dd_metrics_exectime)
   end
 end
 
